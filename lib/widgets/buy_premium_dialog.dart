@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:azaadi_vpn_android/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -36,7 +37,7 @@ class BuyPremiumDialog extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          Text('Premium required 👑',
+                          Text('Upgrade to Premium',
                               style: GoogleFonts.lato(
                                   textStyle: TextStyle(
                                       color: Colors.orange,
@@ -61,7 +62,20 @@ class BuyPremiumDialog extends StatelessWidget {
                                   style: GoogleFonts.lato(
                                       textStyle: TextStyle()))),
                           ElevatedButton.icon(
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.back();
+                                Get.closeAllSnackbars();
+                                Get.snackbar(
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: size.height * 0.02,
+                                        horizontal: size.width * 0.01),
+                                    icon: Icon(
+                                      LucideIcons.crown,
+                                      color: AppColors.premiumText,
+                                    ),
+                                    'Coming soon',
+                                    'Feature under development');
+                              },
                               icon: Icon(
                                 LucideIcons.crown,
                                 color: Colors.orange,

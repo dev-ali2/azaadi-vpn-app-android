@@ -5,13 +5,19 @@ import 'package:azaadi_vpn_android/controller/notification_controller.dart';
 import 'package:azaadi_vpn_android/controller/premium_controller.dart';
 import 'package:azaadi_vpn_android/core/models/services/vpn_engine.dart';
 import 'package:azaadi_vpn_android/core/models/vpn_status.dart';
+import 'package:azaadi_vpn_android/pages/settings_info_page.dart';
 import 'package:azaadi_vpn_android/pages/temp_servers_page.dart';
 import 'package:azaadi_vpn_android/theme/theme.dart';
 import 'package:azaadi_vpn_android/widgets/buy_premium_dialog.dart';
+import 'package:azaadi_vpn_android/widgets/custom_button.dart';
+import 'package:azaadi_vpn_android/widgets/settings_options/about_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_options/azaadi_themes_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_options/change_location_option.dart';
+import 'package:azaadi_vpn_android/widgets/settings_options/faq_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_options/haptic_feedback_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_options/notifications_option.dart';
+import 'package:azaadi_vpn_android/widgets/settings_options/report_bug_option.dart';
+import 'package:azaadi_vpn_android/widgets/settings_options/restore_purchase_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_options/validate_locations_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_titles.dart';
 import 'package:flutter/material.dart';
@@ -23,15 +29,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:azaadi_vpn_android/pages/locations_page.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:store_redirect/store_redirect.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({super.key});
 
-  final hapticController = HapticController();
   final premiumController = Get.find<PremiumController>();
-  final hiveController = HiveController();
-  final notificationController = NotificationController();
-  final connectionController = ConnectionController();
+  final hapticController = Get.find<HapticController>();
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +101,6 @@ class SettingsPage extends StatelessWidget {
                   ),
                   //Azaadi themes
                   AzaadiThemesOption(),
-
                   Divider(
                     indent: size.width * 0.2,
                   ),
@@ -104,13 +108,10 @@ class SettingsPage extends StatelessWidget {
                     text: 'Connection',
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  //? Connection Settings
-
+                  // Connection
                   NotificationsOption(),
-
                   ChangeLocationOption(),
                   ValidateLocationsOption(),
-
                   Divider(
                     indent: size.width * 0.2,
                   ),
@@ -120,6 +121,59 @@ class SettingsPage extends StatelessWidget {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   HapticFeedbackOption(),
+                  ReportBugOption(),
+                  Divider(
+                    indent: size.width * 0.2,
+                  ),
+                  // Miscellaneous
+                  SettingsTitles(
+                    text: 'Miscellaneous',
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  RestorePurchaseOption(),
+                  FaqOption(),
+                  AboutOption(),
+                  //share app
+                  CustomButton(
+                      text: 'Share app',
+                      onTap: () {
+                        Share.share(
+                            'Hey, I just found a great vpn app on playstore, do check it out right now and enjoy censorship free and secure browsing\nhttps://play.google.com/store/apps/details?id=com.azaadi.vpn.android.app');
+                      }),
+                  //rate app
+                  CustomButton(
+                      text: 'Rate on playstore',
+                      onTap: () {
+                        StoreRedirect.redirect(
+                            androidAppId: 'com.azaadi.vpn.android.app');
+                      }),
+                  //termsof use
+                  CustomButton(
+                      text: 'Terms of use',
+                      onTap: () async {
+                        hapticController.provideFeedback(FeedbackType.light);
+                        String termsOfUse = await HiveController.getTermsOfUse;
+
+                        Get.to(
+                            transition: Transition.cupertino,
+                            () => SettingsInfoPage(
+                                title: 'Terms of use',
+                                description: termsOfUse));
+                      }),
+                  //privacy policy
+                  CustomButton(
+                      text: 'Privacy policy',
+                      onTap: () async {
+                        hapticController.provideFeedback(FeedbackType.light);
+                        String privacyPolicy =
+                            await HiveController.getPrivacyPolicy;
+
+                        Get.to(
+                            transition: Transition.cupertino,
+                            () => SettingsInfoPage(
+                                title: 'Privacy Policy',
+                                description: privacyPolicy));
+                      }),
                 ],
               ),
             ),

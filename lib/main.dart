@@ -22,17 +22,15 @@ import 'controller/dotenv_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DotenvController.initDotenv();
-
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  await DotenvController.initDotenv();
   await HiveController.initializeHive();
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_URL']!,
     anonKey: dotenv.env['SUPABASE_KEY']!,
   );
   NotificationController.initNotificationService();
-  //testing functions
-
   runApp(MyApp());
 }
 
@@ -41,11 +39,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final premiumController = Get.put(PremiumController());
-    final hapticController = Get.put(HapticController());
-    final notificationController = Get.put(NotificationController());
-    final hiveController = Get.put(HiveController());
-    final connectionController = Get.put(ConnectionController());
+    Get.put(PremiumController());
+    Get.put(HapticController());
+    Get.put(NotificationController());
+    Get.put(HiveController());
+    Get.put(ConnectionController());
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: DefaultTheme.lightTheme,

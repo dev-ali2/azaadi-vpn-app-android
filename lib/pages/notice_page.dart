@@ -3,10 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class AzaadiNoticePage extends StatelessWidget {
-  AzaadiNoticePage({super.key, required this.description});
+class NoticePage extends StatelessWidget {
+  NoticePage(
+      {super.key,
+      required this.description,
+      required this.subtitle,
+      required this.title,
+      required this.showButton});
 
   final String description;
+  final String title;
+  final String subtitle;
+  final bool showButton;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +25,7 @@ class AzaadiNoticePage extends StatelessWidget {
         backgroundColor: Colors.black,
         centerTitle: true,
         title: Text(
-          'Azaadi Notice Board',
+          title,
           style: GoogleFonts.lato(
               textStyle: TextStyle(
             fontWeight: FontWeight.bold,
@@ -42,7 +50,7 @@ class AzaadiNoticePage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.symmetric(vertical: size.height * 0.025),
                   child: Text(
-                    'Notice',
+                    subtitle,
                     style: GoogleFonts.ptSans(
                         textStyle: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -69,15 +77,20 @@ class AzaadiNoticePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(
-                      top: size.height * 0.05, bottom: size.height * 0.02),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Get.offAll(() => DefaultHomeScreen());
-                      },
-                      child: Text('Got it')),
-                )
+                showButton
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                            top: size.height * 0.05,
+                            bottom: size.height * 0.02),
+                        child: ElevatedButton(
+                            onPressed: () {
+                              Get.offAll(() => DefaultHomeScreen());
+                            },
+                            child: Text('Got it')),
+                      )
+                    : SizedBox(
+                        height: size.height * 0.06,
+                      )
               ],
             )),
       ),

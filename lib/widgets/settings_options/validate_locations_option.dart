@@ -26,6 +26,7 @@ class ValidateLocationsOption extends StatelessWidget {
               : TextButton(
                   onPressed: () {
                     connectionController.validateServers().then((value) {
+                      Get.closeAllSnackbars();
                       Get.snackbar(
                           margin: EdgeInsets.symmetric(
                               vertical: size.height * 0.02,

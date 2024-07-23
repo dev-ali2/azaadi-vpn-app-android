@@ -24,7 +24,8 @@ class NotificationsOption extends StatelessWidget {
             size: 20,
           ),
           listViewSubtitle: ListViewSubtitle(
-            text: 'Enable this to see vpn connection status as notification',
+            text:
+                'Enable this to see vpn connection status in notification bar',
           ),
           listViewTitle: ListViewTitle(
             text: 'Connection Info',

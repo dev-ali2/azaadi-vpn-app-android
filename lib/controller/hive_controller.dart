@@ -107,4 +107,30 @@ class HiveController extends GetxController {
     _box.put('showNotification', b);
     log('show notification ${_box.get('showNotification')}');
   }
+
+  // getter and setter for privacy policy
+  static String get getPrivacyPolicy => _box.get('privacyPolicy') ?? '';
+  static set setPrivacyPolicy(String s) {
+    _box.put('privacyPolicy', s);
+  }
+
+  // getter and setter for terms of use
+  static String get getTermsOfUse => _box.get('termsOfUse') ?? '';
+  static set setTermOfUse(String s) {
+    _box.put('termsOfUse', s);
+  }
+
+  // getter and setter for faqs
+  static String get getFaqs => _box.get('faqs') ?? '';
+  static set setFaqs(String s) {
+    _box.put('faqs', s);
+  }
+
+  // getter and setter for  app version info
+  static Map<String, dynamic> get getDeviceInfo =>
+      jsonDecode(_box.get('deviceInfo')) ?? '{}';
+  static set setDeviceInfo(Map<String, dynamic> data) {
+    _box.put('deviceInfo', jsonEncode(data));
+    log('saved device data ${data.toString()}');
+  }
 }

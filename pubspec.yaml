@@ -28,6 +28,10 @@ dependencies:
   loading_animation_widget: ^1.2.1
   simple_connection_checker: ^0.2.1
   share_plus: ^9.0.0
+  package_info_plus: ^8.0.0
+  platform_device_id: ^1.0.1
+  url_launcher: ^6.3.0
+  store_redirect: ^2.0.2
 
 dev_dependencies:
   flutter_test:

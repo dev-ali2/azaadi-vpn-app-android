@@ -3,12 +3,13 @@ import 'dart:developer';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
 import 'package:azaadi_vpn_android/home/default_home.dart';
-import 'package:azaadi_vpn_android/pages/azaadi_initial_notice_page.dart';
-import 'package:azaadi_vpn_android/pages/azaadi_notice_page.dart';
+import 'package:azaadi_vpn_android/pages/notice_page.dart';
 
 import 'package:get/get.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:simple_connection_checker/simple_connection_checker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 
 class SplashController extends GetxController {
   final supabase = Supabase.instance.client;
@@ -20,6 +21,18 @@ class SplashController extends GetxController {
   Future<void> splashLogic() async {
     messsage.value = 'Initializing';
     showLoading.value = true;
+    final packageInfo = await PackageInfo.fromPlatform();
+
+    // store current app version and device info
+    String deviceId = await PlatformDeviceId.getDeviceId ?? '';
+    final Map<String, dynamic> info = {
+      'appName': packageInfo.appName,
+      'packageName': packageInfo.packageName,
+      'appVersion': packageInfo.version,
+      'buildNumber': packageInfo.buildNumber,
+      'deviceId': deviceId
+    };
+    HiveController.setDeviceInfo = info;
 
     //check connection
     Future.delayed(Duration(seconds: 1)).then((value) async {
@@ -35,6 +48,24 @@ class SplashController extends GetxController {
         //connect to database
         messsage.value = 'Validating app status';
         final List appStatus = await supabase.from('app_stats').select();
+        //? store privacy policy, terms of use and faqs
+        String savedPrivacyPolicy = await HiveController.getPrivacyPolicy;
+        String gotPrivacyPolicy = appStatus.first['privacy_policy'] as String;
+        if (savedPrivacyPolicy != gotPrivacyPolicy) {
+          HiveController.setPrivacyPolicy = gotPrivacyPolicy;
+        }
+        //
+        String savedTermsOfUse = await HiveController.getTermsOfUse;
+        String gotTermsOfUse = appStatus.first['terms_of_use'] as String;
+        if (savedTermsOfUse != gotTermsOfUse) {
+          HiveController.setTermOfUse = gotTermsOfUse;
+        }
+        //
+        String savedFaqs = await HiveController.getFaqs;
+        String gotFaqs = appStatus.first['faqs'] as String;
+        if (savedFaqs != gotFaqs) {
+          HiveController.setFaqs = gotFaqs;
+        }
         if (appStatus.first['open_app'] == false) {
           messsage.value = 'App access denied';
           showLoading.value = false;
@@ -55,6 +86,34 @@ class SplashController extends GetxController {
         }
         HiveController.setVpnList = finalList;
 
+        //? check app version update
+
+        String appVersion =
+            await HiveController.getDeviceInfo['appVersion'] as String;
+        appVersion = appVersion.replaceAll('.', '');
+        int finalSavedVersion = int.parse(appVersion);
+
+        String onlineAppVersion = appStatus.first['app_version'] as String;
+        onlineAppVersion = onlineAppVersion.replaceAll('.', '');
+        int finalOnlineVersion = int.parse(onlineAppVersion);
+        log('saved int value $finalSavedVersion');
+        log('online int value $finalOnlineVersion');
+
+        if (finalOnlineVersion > finalSavedVersion) {
+          Get.offAll(
+              transition: Transition.fade,
+              duration: Duration(milliseconds: 1000),
+              () => NoticePage(
+                    title: 'Update Available',
+                    subtitle: 'A new version of app is available.',
+                    description:
+                        'Please Update to keep using the app\n\nGo to playstore to see available update',
+                    showButton: false,
+                  ));
+
+          return;
+        }
+
         //? check initial notice
         String initialSavedNotice = HiveController.getInitialNotice;
         if ((initialSavedNotice !=
@@ -65,12 +124,16 @@ class SplashController extends GetxController {
           Get.offAll(
               transition: Transition.fade,
               duration: Duration(milliseconds: 1000),
-              () => AzaadiInitialNoticePage(
+              () => NoticePage(
+                    title: 'Welcome',
+                    subtitle: 'Please read this',
                     description: newNotice,
+                    showButton: true,
                   ));
 
           return;
         }
+
         //? check notes
         String notesFromStorage = HiveController.getNotice;
         if ((notesFromStorage != (appStatus.first['notice'] as String)) &&
@@ -80,8 +143,11 @@ class SplashController extends GetxController {
           Get.offAll(
               transition: Transition.fade,
               duration: Duration(milliseconds: 1000),
-              () => AzaadiNoticePage(
+              () => NoticePage(
+                    title: 'Azaadi Notice Board',
+                    subtitle: 'New Notice',
                     description: newNotice,
+                    showButton: true,
                   ));
 
           return;

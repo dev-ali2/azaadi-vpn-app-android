@@ -17,7 +17,16 @@ class AzaadiThemesOption extends StatelessWidget {
     return InkWell(
       onTap: () {
         hapticController.provideFeedback(FeedbackType.light);
-        Future.delayed(Duration(milliseconds: 300)).then((value) => null);
+        Get.closeAllSnackbars();
+        Get.snackbar(
+            margin: EdgeInsets.symmetric(
+                vertical: size.height * 0.02, horizontal: size.width * 0.01),
+            icon: Icon(
+              LucideIcons.paintBucket,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            'Coming soon',
+            'Currently under development');
       },
       borderRadius: BorderRadius.circular(20),
       splashColor: Theme.of(context).colorScheme.onSecondary,
@@ -40,11 +49,12 @@ class AzaadiThemesOption extends StatelessWidget {
                           fontSize: 13,
                         )),
                         children: [
-                      TextSpan(text: 'Current : '),
+                      TextSpan(text: 'Current '),
                       TextSpan(
-                          text: 'default',
+                          text: 'Default',
                           style: GoogleFonts.ptSans(
                               textStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
                                   color:
                                       Theme.of(context).colorScheme.primary))),
                     ])),
