@@ -24,7 +24,7 @@ class AppFooterContainer extends StatelessWidget {
           right: size.width * 0.05,
           left: size.width * 0.05,
           bottom: size.height * 0.01),
-      height: size.height * 0.2,
+      height: size.height * 0.24,
       width: double.infinity,
       decoration: BoxDecoration(
           gradient: LinearGradient(begin: Alignment.centerLeft, colors: [

@@ -5,12 +5,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
+     <!-- <uses-permission android:name="com.google.android.gms.permission.AD_ID"/> -->
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     
     
     <application android:name="${applicationName}" android:label="Azaadi Vpn" android:icon="@mipmap/launcher_icon" tools:ignore="AllowBackup">
-        
+     
         <activity android:name=".MainActivity" android:launchMode="singleTop" android:exported="true" android:theme="@style/LaunchTheme" android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" android:hardwareAccelerated="true" android:windowSoftInputMode="adjustResize">
 
             <meta-data android:name="io.flutter.embedding.android.NormalTheme" android:resource="@style/NormalTheme"/>
@@ -30,5 +31,8 @@
                 <action android:name="android.net.VpnService"/>
             </intent-filter>
         </service>
+                  <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-5290602578002470~1580804548"/>
     </application>
 </manifest>

@@ -1,11 +1,20 @@
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:azaadi_vpn_android/controller/ad_controller.dart';
+import 'package:azaadi_vpn_android/controller/connection_controller.dart';
+import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
+import 'package:azaadi_vpn_android/controller/init_controllers.dart';
+import 'package:azaadi_vpn_android/controller/notification_controller.dart';
+import 'package:azaadi_vpn_android/controller/premium_controller.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
 import 'package:azaadi_vpn_android/home/default_home.dart';
 import 'package:azaadi_vpn_android/pages/notice_page.dart';
+import 'package:azaadi_vpn_android/widgets/terms_accept_dialog.dart';
 
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:simple_connection_checker/simple_connection_checker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -24,7 +33,8 @@ class SplashController extends GetxController {
     final packageInfo = await PackageInfo.fromPlatform();
 
     // store current app version and device info
-    String deviceId = await PlatformDeviceId.getDeviceId ?? '';
+    String deviceId =
+        await PlatformDeviceId.getDeviceId ?? DateTime.now().toString();
     final Map<String, dynamic> info = {
       'appName': packageInfo.appName,
       'packageName': packageInfo.packageName,
@@ -47,7 +57,83 @@ class SplashController extends GetxController {
         }
         //connect to database
         messsage.value = 'Validating app status';
+//checking app status
         final List appStatus = await supabase.from('app_stats').select();
+        final userRegistrationInfo = await supabase
+            .from('user_registrations')
+            .select()
+            .eq('device_id', deviceId);
+        final userStats = await supabase
+            .from('users_stats')
+            .select()
+            .eq('device_id', deviceId);
+
+        //checking and storing user registration info
+        if (userRegistrationInfo.length == 0) {
+          messsage.value = 'Setting up for first use';
+          try {
+            final fetchIpDetails =
+                await get(Uri.parse('http://ip-api.com/json/'));
+            final Map<String, dynamic> gotDetails =
+                json.decode(fetchIpDetails.body);
+
+            await supabase.from('user_registrations').insert({
+              'ip_address': gotDetails['query'],
+              'country': gotDetails['country'],
+              'country_code':
+                  gotDetails['countryCode'].toString().toLowerCase(),
+              'region': gotDetails['regionName'],
+              'city': gotDetails['city'],
+              'zip_code': gotDetails['zip'],
+              'time_zone': gotDetails['timezone'],
+              'isp': gotDetails['isp'],
+              'device_id': deviceId
+            });
+          } catch (e) {
+            messsage.value = 'Error setting up app';
+            showLoading.value = false;
+            log('error from user registration ${e.toString()}');
+            return;
+          }
+        }
+        // checking and storing user status info
+        if (userStats.length == 0) {
+          messsage.value = 'Setting up for first use';
+          try {
+            HiveController.setIsUnderTesting = appStatus.first['is_testing'];
+            await supabase.from('users_stats').insert({
+              'is_premium': true, //TODO set this false later
+              'is_blocked': false,
+              'app_version': info['appVersion'],
+              'app_package': info['packageName'],
+              'show_ads': true,
+              'access_themes': true,
+              'device_id': deviceId,
+              'is_tester': appStatus.first['is_testing'] as bool,
+            });
+          } catch (e) {
+            messsage.value = 'Error while setting up the app';
+            showLoading.value = false;
+            log('error in user stats ${e.toString()}');
+            return;
+          }
+        } else {
+          HiveController.setIsUnderTesting = userStats.first['is_tester'];
+          HiveController.setIsPremium = userStats.first['is_premium'] as bool;
+          HiveController.setAdsStatus = userStats.first['show_ads'] as bool;
+          HiveController.setAzaadiThemesStatus =
+              userStats.first['access_themes'] as bool;
+          HiveController.setIsUserBlocked =
+              userStats.first['is_blocked'] as bool;
+        }
+
+        if (HiveController.getIsUserBlocked) {
+          messsage.value =
+              'You are blocked from using this app\nFor further details, mail at\ninbox.dev@proton.me\nDevice id: ${deviceId}';
+          showLoading.value = false;
+          return;
+        }
+
         //? store privacy policy, terms of use and faqs
         String savedPrivacyPolicy = await HiveController.getPrivacyPolicy;
         String gotPrivacyPolicy = appStatus.first['privacy_policy'] as String;
@@ -72,7 +158,7 @@ class SplashController extends GetxController {
           return;
         }
         if (appStatus.first['see_servers'] == false) {
-          messsage.value = 'Server access denied';
+          messsage.value = 'App under maintainance\n Please try again later';
           showLoading.value = false;
           serversAccess = false;
           return;
@@ -85,6 +171,9 @@ class SplashController extends GetxController {
           finalList.add(Vpn.fromJson(downloadedServers[i]));
         }
         HiveController.setVpnList = finalList;
+
+        // initializing controllers
+        InitControllers.initControllers();
 
         //? check app version update
 
@@ -114,22 +203,10 @@ class SplashController extends GetxController {
           return;
         }
 
-        //? check initial notice
-        String initialSavedNotice = HiveController.getInitialNotice;
-        if ((initialSavedNotice !=
-                (appStatus.first['initial_notice'] as String)) &&
-            (appStatus.first['initial_notice'] as String) != '') {
-          String newNotice = (appStatus.first['initial_notice'] as String);
-          HiveController.setInitialNotice = newNotice;
-          Get.offAll(
-              transition: Transition.fade,
-              duration: Duration(milliseconds: 1000),
-              () => NoticePage(
-                    title: 'Welcome',
-                    subtitle: 'Please read this',
-                    description: newNotice,
-                    showButton: true,
-                  ));
+        //? check terms status
+        bool termsStatus = await HiveController.getTermsStatus;
+        if (!termsStatus) {
+          Get.offAll(transition: Transition.fade, () => TermsAcceptDialog());
 
           return;
         }

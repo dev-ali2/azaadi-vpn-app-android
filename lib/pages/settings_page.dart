@@ -61,40 +61,6 @@ class SettingsPage extends StatelessWidget {
             child: SizedBox(
               child: Column(
                 children: [
-                  Obx(
-                    () => Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: size.height * 0.003, horizontal: 10),
-                      child: Container(
-                          height: size.height * 0.08,
-                          width: double.infinity,
-                          child: ListTile(
-                            leading: Icon(
-                              LucideIcons.crown,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 20,
-                            ),
-                            trailing: Switch(
-                              inactiveThumbColor: Theme.of(context)
-                                  .colorScheme
-                                  .primary
-                                  .withOpacity(0.7),
-                              inactiveTrackColor: Colors.black.withOpacity(0.1),
-                              value: premiumController.isPremium.value,
-                              onChanged: (value) {
-                                premiumController.changePremiumStatus(value);
-                              },
-                            ),
-                            title: Text(
-                              'Premium mode',
-                              style: GoogleFonts.ptSans(
-                                  textStyle: TextStyle(
-                                fontSize: 18,
-                              )),
-                            ),
-                          )),
-                    ),
-                  ),
                   SettingsTitles(
                     text: 'Exclusive 👑',
                     color: AppColors.premiumText,

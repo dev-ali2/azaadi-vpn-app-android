@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:azaadi_vpn_android/controller/notification_controller.dart';
+import 'package:azaadi_vpn_android/widgets/permission_promt_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:azaadi_vpn_android/apis/apis.dart';
@@ -18,6 +19,7 @@ import 'package:azaadi_vpn_android/core/models/vpn.dart';
 import 'package:azaadi_vpn_android/core/models/vpn_config.dart';
 // Import package
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ConnectionController extends GetxController {
@@ -57,7 +59,7 @@ class ConnectionController extends GetxController {
         StatsController.setTimerStatus = true;
         showAnimation.value = true;
         StatsController.setEncryptionStatus = true;
-        randInt.value.clear();
+        randInt.clear();
         isConnectionStarted.value = false;
       }
     });
@@ -66,6 +68,32 @@ class ConnectionController extends GetxController {
   Future<void> connectVpn() async {
     log('Tapped');
     hapticController.provideFeedback(FeedbackType.medium);
+    bool isInitial = HiveController.getIsInitialConnection;
+    bool isUnderTesting = await HiveController.getIsUnderTesting;
+    if (isUnderTesting) {
+      Get.closeAllSnackbars();
+      Get.snackbar(
+          duration: Duration(seconds: 3),
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          icon: Icon(
+            LucideIcons.testTubeDiagonal,
+            color: Colors.green,
+          ),
+          'Tester mode',
+          'Conecting to servers is not available for testers right now');
+      return;
+    }
+    if (isInitial) {
+      HiveController.setIsInitialConnection = false;
+      Get.to(
+          transition: Transition.fadeIn,
+          () => PermissionsPromtDialog(
+              description:
+                  'This will allow the app to create a secure vpn tunnel to encrypt the outgoing or incoming traffic\nNext time when you will click this button, the system will promt you to give this permission\nYou can easily allow or deny it from that system dialog',
+              type: 'Vpn tunnel creation'));
+      return;
+    }
+
     Future.delayed(Duration(milliseconds: 0)).then((value) async {
       if (vpnState.value != 'Disconnected') {
         VpnEngine.stopVpn();

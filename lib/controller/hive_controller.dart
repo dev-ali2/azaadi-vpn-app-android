@@ -71,7 +71,8 @@ class HiveController extends GetxController {
   }
 
   //premium getter and setter
-  static bool get getIsPremium => _box.get('isPremium') ?? false;
+  static bool get getIsPremium =>
+      _box.get('isPremium') ?? true; //TODO set this to false later
   static set setIsPremium(bool b) {
     _box.put('isPremium', b);
     log('Is Premium ${_box.get('isPremium')}');
@@ -93,13 +94,13 @@ class HiveController extends GetxController {
 
   static String get getNotice => _box.get('notice') ?? '';
 
-  //getter setter for initial notice
-  static set setInitialNotice(String s) {
-    _box.put('initNotice', s);
-    log('Got initial notice $s');
+  //getter setter for accepting terms
+  static set setTermsStatus(bool b) {
+    _box.put('termsStatus', b);
+    log('Terms set to  $b');
   }
 
-  static String get getInitialNotice => _box.get('initNotice') ?? '';
+  static bool get getTermsStatus => _box.get('termsStatus') ?? false;
 
   //notification getter and setter
   static bool get getShowNotification => _box.get('showNotification') ?? false;
@@ -132,5 +133,45 @@ class HiveController extends GetxController {
   static set setDeviceInfo(Map<String, dynamic> data) {
     _box.put('deviceInfo', jsonEncode(data));
     log('saved device data ${data.toString()}');
+  }
+
+  //initial notification getter and setter
+  static bool get getIsInitialNotification =>
+      _box.get('isInitialNotification') ?? true;
+  static set setIsInitialNotification(bool b) {
+    _box.put('isInitialNotification', b);
+  }
+
+  //initial connection getter and setter
+  static bool get getIsInitialConnection =>
+      _box.get('isInitialConnection') ?? true;
+  static set setIsInitialConnection(bool b) {
+    _box.put('isInitialConnection', b);
+  }
+
+  //show ads getter and setter
+  static bool get getAdsStatus => _box.get('AdsStatus') ?? true;
+  static set setAdsStatus(bool b) {
+    _box.put('AdsStatus', b);
+    log('Ads show set to ${b}');
+  }
+
+  // user block getter and setter
+  static bool get getIsUserBlocked => _box.get('userStatus') ?? false;
+  static set setIsUserBlocked(bool b) {
+    _box.put('userStatus', b);
+  }
+
+  // user block getter and setter
+  static bool get getShowAzaadiThemes =>
+      _box.get('azaadiThemesStatus') ?? false;
+  static set setAzaadiThemesStatus(bool b) {
+    _box.put('azaadiThemesStatus', b);
+  }
+
+  // Testing app getter and setter
+  static bool get getIsUnderTesting => _box.get('testingStatus') ?? false;
+  static set setIsUnderTesting(bool b) {
+    _box.put('testingStatus', b);
   }
 }

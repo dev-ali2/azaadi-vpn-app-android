@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:azaadi_vpn_android/controller/ad_controller.dart';
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';

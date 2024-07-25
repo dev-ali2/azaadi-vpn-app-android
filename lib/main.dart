@@ -1,10 +1,12 @@
 import 'dart:developer';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:azaadi_vpn_android/controller/ad_controller.dart';
 import 'package:azaadi_vpn_android/controller/connection_controller.dart';
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:azaadi_vpn_android/controller/notification_controller.dart';
 import 'package:azaadi_vpn_android/controller/premium_controller.dart';
+import 'package:azaadi_vpn_android/controller/splash_controller.dart';
 import 'package:azaadi_vpn_android/pages/splash_page.dart';
 import 'package:azaadi_vpn_android/pages/temp_notifications_page.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ void main() async {
     anonKey: dotenv.env['SUPABASE_KEY']!,
   );
   NotificationController.initNotificationService();
+  await AdController.initAdService();
   runApp(MyApp());
 }
 
@@ -39,11 +42,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(PremiumController());
-    Get.put(HapticController());
-    Get.put(NotificationController());
-    Get.put(HiveController());
-    Get.put(ConnectionController());
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       theme: DefaultTheme.lightTheme,
