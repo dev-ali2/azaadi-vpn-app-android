@@ -12,13 +12,13 @@ class HiveController extends GetxController {
   static Future<void> initializeHive() async {
     await Hive.initFlutter();
     _box = await Hive.openBox('data');
-    log('local storage enabled!');
+    // log('local storage enabled!');
 
     try {
       final List savedList = await jsonDecode(_box.get('vpnList2'));
-      log('total saved vpns are ${savedList.length}');
+      // log('total saved vpns are ${savedList.length}');
     } catch (e) {
-      log('no last connected vpn');
+      // log('no last connected vpn');
     }
   }
 
@@ -40,7 +40,7 @@ class HiveController extends GetxController {
 //store vpn data list
   static set setVpnList(List<Vpn> v) {
     _box.put('vpnList2', jsonEncode(v));
-    log('New list is added with ${v.length} enteries');
+    // log('New list is added with ${v.length} enteries');
   }
 
   //get sorted vpn list
@@ -60,7 +60,7 @@ class HiveController extends GetxController {
   //delete all saved data
   static void deleteSavedServers() {
     _box.clear();
-    log('Deleted previous vpns');
+    // log('Deleted previous vpns');
   }
 
   //haptics getter and setter
@@ -75,13 +75,13 @@ class HiveController extends GetxController {
       _box.get('isPremium') ?? true; //TODO set this to false later
   static set setIsPremium(bool b) {
     _box.put('isPremium', b);
-    log('Is Premium ${_box.get('isPremium')}');
+    // log('Is Premium ${_box.get('isPremium')}');
   }
 
   //getter and setter for app version
   static set setAppVersion(String s) {
     _box.put('appVersion', s);
-    log('Got app version $s');
+    // log('Got app version $s');
   }
 
   static String get getAppVersion => _box.get('appVersion');
@@ -89,7 +89,7 @@ class HiveController extends GetxController {
   //getter and setter for notices
   static set setNotice(String s) {
     _box.put('notice', s);
-    log('Got release notes $s');
+    // log('Got release notes $s');
   }
 
   static String get getNotice => _box.get('notice') ?? '';
@@ -97,7 +97,7 @@ class HiveController extends GetxController {
   //getter setter for accepting terms
   static set setTermsStatus(bool b) {
     _box.put('termsStatus', b);
-    log('Terms set to  $b');
+    // log('Terms set to  $b');
   }
 
   static bool get getTermsStatus => _box.get('termsStatus') ?? false;
@@ -106,7 +106,7 @@ class HiveController extends GetxController {
   static bool get getShowNotification => _box.get('showNotification') ?? false;
   static set setShowNotification(bool b) {
     _box.put('showNotification', b);
-    log('show notification ${_box.get('showNotification')}');
+    // log('show notification ${_box.get('showNotification')}');
   }
 
   // getter and setter for privacy policy
@@ -132,7 +132,7 @@ class HiveController extends GetxController {
       jsonDecode(_box.get('deviceInfo')) ?? '{}';
   static set setDeviceInfo(Map<String, dynamic> data) {
     _box.put('deviceInfo', jsonEncode(data));
-    log('saved device data ${data.toString()}');
+    // log('saved device data ${data.toString()}');
   }
 
   //initial notification getter and setter
@@ -153,7 +153,7 @@ class HiveController extends GetxController {
   static bool get getAdsStatus => _box.get('AdsStatus') ?? true;
   static set setAdsStatus(bool b) {
     _box.put('AdsStatus', b);
-    log('Ads show set to ${b}');
+    // log('Ads show set to ${b}');
   }
 
   // user block getter and setter

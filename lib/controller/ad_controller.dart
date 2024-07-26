@@ -54,13 +54,13 @@ class AdController extends GetxController {
 //?//?//?//?//?//!//!//!//!//!//!
 //!ALWAYS SHOW DIALOG PROMT BEFORE SHOWING A FULL SCREEN AD TO USER
   static final BannerAdListener listener = BannerAdListener(
-    onAdLoaded: (ad) => log('ad loaded'),
+    // onAdLoaded: (ad) => log('ad loaded'),
     onAdFailedToLoad: (ad, error) {
       ad.dispose();
-      log('failed to load ad due to $error');
+      // log('failed to load ad due to $error');
     },
-    onAdOpened: (ad) => log('Ad opened'),
-    onAdClosed: (ad) => log('Ad closed'),
+    // onAdOpened: (ad) => log('Ad opened'),
+    // onAdClosed: (ad) => log('Ad closed'),
   );
   static BannerAd? showBannerAd() {
     if (showAds.value) {
@@ -73,10 +73,10 @@ class AdController extends GetxController {
             },
             onAdFailedToLoad: (ad, error) {
               ad.dispose();
-              log('failed to load ad due to $error');
+              // log('failed to load ad due to $error');
             },
-            onAdOpened: (ad) => log('Ad opened'),
-            onAdClosed: (ad) => log('Ad closed'),
+            // onAdOpened: (ad) => log('Ad opened'),
+            // onAdClosed: (ad) => log('Ad closed'),
           ),
           request: AdRequest())
         ..load();
@@ -99,7 +99,7 @@ class AdController extends GetxController {
             ad.show();
           },
           onAdFailedToLoad: (err) {
-            log('Failed to load an interstitial ad: ${err.message}');
+            // log('Failed to load an interstitial ad: ${err.message}');
           },
         ),
       );
@@ -112,7 +112,7 @@ class AdController extends GetxController {
           adUnitId: AdController.nativeTestAdId,
           listener: NativeAdListener(
             onAdLoaded: (ad) {
-              log('$NativeAd loaded.');
+              // log('$NativeAd loaded.');
               isNativeAdLoaded.value = true;
             },
             onAdFailedToLoad: (ad, error) {
@@ -146,7 +146,7 @@ class AdController extends GetxController {
           });
         },
         onAdFailedToLoad: (err) {
-          log('Failed to load an interstitial ad: ${err.message}');
+          // log('Failed to load an interstitial ad: ${err.message}');
         },
       ),
     );

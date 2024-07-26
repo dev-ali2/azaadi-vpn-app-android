@@ -1,6 +1,7 @@
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/controller/premium_controller.dart';
+import 'package:azaadi_vpn_android/theme/theme.dart';
 import 'package:azaadi_vpn_android/widgets/buy_premium_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -106,10 +107,21 @@ class AppFooterContainer extends StatelessWidget {
                       );
                       return;
                     }
-                    showDialog(
-                      context: context,
-                      builder: (context) => MoreInfoDialog(),
-                    );
+                    Get.closeAllSnackbars();
+                    Get.snackbar(
+                        margin: EdgeInsets.symmetric(
+                            vertical: size.height * 0.02,
+                            horizontal: size.width * 0.01),
+                        icon: Icon(
+                          LucideIcons.crown,
+                          color: AppColors.premiumText,
+                        ),
+                        'Coming soon',
+                        'Feature under development');
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) => MoreInfoDialog(), //TODO un-comment
+                    // );
                   },
                 ),
               ),

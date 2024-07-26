@@ -68,8 +68,9 @@ class ConnectionController extends GetxController {
   Future<void> connectVpn() async {
     log('Tapped');
     hapticController.provideFeedback(FeedbackType.medium);
-    bool isInitial = HiveController.getIsInitialConnection;
     bool isUnderTesting = await HiveController.getIsUnderTesting;
+    bool isInitial = HiveController.getIsInitialConnection;
+
     if (isUnderTesting) {
       Get.closeAllSnackbars();
       Get.snackbar(
@@ -177,6 +178,17 @@ class ConnectionController extends GetxController {
   }
 
   void manualConnection(Vpn v) {
+    bool isInitial = HiveController.getIsInitialConnection;
+    if (isInitial) {
+      HiveController.setIsInitialConnection = false;
+      Get.to(
+          transition: Transition.fadeIn,
+          () => PermissionsPromtDialog(
+              description:
+                  'This will allow the app to create a secure vpn tunnel to encrypt the outgoing or incoming traffic\nNext time when you will click this button, the system will promt you to give this permission\nYou can easily allow or deny it from that system dialog',
+              type: 'Vpn tunnel creation'));
+      return;
+    }
     try {
       vpn.value = v;
       if (vpnState.value != 'Disconnected') {
@@ -196,7 +208,7 @@ class ConnectionController extends GetxController {
         validateConnection();
       });
     } catch (e) {
-      log('error in manuual connection function : ${e.toString()}');
+      // log('error in manuual connection function : ${e.toString()}');
     }
   }
 
@@ -241,14 +253,14 @@ class ConnectionController extends GetxController {
 
   //validate connection
   void validateConnection() {
-    log('running validate');
+    // log('running validate');
     isConnectionStarted.value = true;
     Future.delayed(Duration(seconds: 12)).then((value) async {
       if (vpnState.value != 'Connected' && vpnState.value != 'Disconnected') {
         VpnEngine.stopVpn();
         vpnState.value = 'Retrying...';
         final List<Vpn> servers = await HiveController.getVpnList;
-        log('from validate got saved vpn list with ${servers.length} enteries');
+        // log('from validate got saved vpn list with ${servers.length} enteries');
 
         // final List<Vpn> servers = [];
         // final tempList =
@@ -258,7 +270,7 @@ class ConnectionController extends GetxController {
         //   servers.add(Vpn.fromJson(tempList[i]));
         // }
         int randomNumber = generateRandomInt(servers.length);
-        log('random number is ${randomNumber}');
+        // log('random number is ${randomNumber}');
         final Vpn selectedServer = servers[randomNumber];
         vpn.value = selectedServer;
 

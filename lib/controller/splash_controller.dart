@@ -92,7 +92,7 @@ class SplashController extends GetxController {
           } catch (e) {
             messsage.value = 'Error setting up app';
             showLoading.value = false;
-            log('error from user registration ${e.toString()}');
+            // log('error from user registration ${e.toString()}');
             return;
           }
         }
@@ -114,7 +114,7 @@ class SplashController extends GetxController {
           } catch (e) {
             messsage.value = 'Error while setting up the app';
             showLoading.value = false;
-            log('error in user stats ${e.toString()}');
+            // log('error in user stats ${e.toString()}');
             return;
           }
         } else {
@@ -185,8 +185,8 @@ class SplashController extends GetxController {
         String onlineAppVersion = appStatus.first['app_version'] as String;
         onlineAppVersion = onlineAppVersion.replaceAll('.', '');
         int finalOnlineVersion = int.parse(onlineAppVersion);
-        log('saved int value $finalSavedVersion');
-        log('online int value $finalOnlineVersion');
+        // log('saved int value $finalSavedVersion');
+        // log('online int value $finalOnlineVersion');
 
         if (finalOnlineVersion > finalSavedVersion) {
           Get.offAll(
@@ -240,7 +240,7 @@ class SplashController extends GetxController {
               () => DefaultHomeScreen());
         });
       } catch (e) {
-        log(e.toString());
+        // log(e.toString());
         messsage.value = 'Something went wrong';
         showLoading.value = false;
       }

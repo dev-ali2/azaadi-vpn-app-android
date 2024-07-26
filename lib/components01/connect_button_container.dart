@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:animated_background/animated_background.dart';
-import 'package:ripple_wave/ripple_wave.dart';
 
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:azaadi_vpn_android/controller/connection_controller.dart';

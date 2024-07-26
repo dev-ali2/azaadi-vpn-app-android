@@ -33,10 +33,10 @@ class _AdFooterState extends State<AdFooter> {
           },
           onAdFailedToLoad: (ad, error) {
             ad.dispose();
-            log('failed to load ad due to $error');
+            // log('failed to load ad due to $error');
           },
-          onAdOpened: (ad) => log('Ad opened'),
-          onAdClosed: (ad) => log('Ad closed'),
+          // onAdOpened: (ad) => log('Ad opened'),
+          // onAdClosed: (ad) => log('Ad closed'),
         ),
         request: AdRequest())
       ..load();
