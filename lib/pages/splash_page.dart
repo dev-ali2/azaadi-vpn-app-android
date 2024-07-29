@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class SplashPage extends StatelessWidget {
   SplashPage({super.key});

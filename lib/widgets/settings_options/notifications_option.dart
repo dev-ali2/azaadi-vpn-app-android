@@ -9,7 +9,6 @@ import 'package:azaadi_vpn_android/widgets/settings_option_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class NotificationsOption extends StatelessWidget {
   const NotificationsOption({super.key});

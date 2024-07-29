@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:azaadi_vpn_android/controller/premium_controller.dart';
@@ -9,8 +8,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
-class TitleText extends StatelessWidget {
-  const TitleText({super.key});
+class TitleText1 extends StatelessWidget {
+  const TitleText1({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,6 @@ class TitleText extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onDoubleTap: (() {
-        log('double tapped');
         Get.dialog(PremiumPromoDialog());
       }),
       onTap: () {

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 
 import 'package:get/get.dart';
@@ -15,7 +13,7 @@ class HapticController extends GetxController {
   bool hapticValue() {
     final getHapticStatus = HiveController.getHapticStatus;
     isHapticEnabled.value = getHapticStatus;
-    return getHapticStatus ?? true;
+    return getHapticStatus;
   }
 
   void provideFeedback(FeedbackType f) {

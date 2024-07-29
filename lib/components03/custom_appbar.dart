@@ -1,10 +1,10 @@
+import 'package:azaadi_vpn_android/components03/settings_icon.dart';
+import 'package:azaadi_vpn_android/components03/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:azaadi_vpn_android/components01/settings_icon.dart';
-import 'package:azaadi_vpn_android/components01/title_text.dart';
 
-class CustomAppbar extends StatelessWidget {
-  const CustomAppbar({super.key});
+class CustomAppbar2 extends StatelessWidget {
+  const CustomAppbar2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +16,8 @@ class CustomAppbar extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          TitleText(),
-          SettingsIcon(),
+          TitleText2(),
+          SettingsIcon2(),
         ],
       ),
     ));

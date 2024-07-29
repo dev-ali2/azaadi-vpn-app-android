@@ -10,14 +10,14 @@ import 'package:azaadi_vpn_android/controller/statistics_controller.dart';
 import 'package:azaadi_vpn_android/helpers/timer_widget.dart';
 import 'package:azaadi_vpn_android/widgets/more_info_dialog.dart';
 
-class AppFooterContainer extends StatelessWidget {
-  AppFooterContainer({super.key});
+class AppFooterContainer2 extends StatelessWidget {
+  AppFooterContainer2({super.key});
   final statsController = StatsController();
 
   @override
   Widget build(BuildContext context) {
-    final premiumController = Get.find<PremiumController>();
     final colors = Get.find<ColorController>();
+    final premiumController = Get.find<PremiumController>();
     Size size = MediaQuery.of(context).size;
     return Container(
       margin: EdgeInsets.only(
@@ -28,7 +28,7 @@ class AppFooterContainer extends StatelessWidget {
       height: size.height * 0.24,
       width: double.infinity,
       decoration: BoxDecoration(
-          gradient: colors.appFootergradient(context),
+          color: Colors.black.withOpacity(0.15),
           borderRadius: BorderRadius.circular(20)),
       child: Center(
         child: Column(
@@ -103,6 +103,7 @@ class AppFooterContainer extends StatelessWidget {
                       );
                       return;
                     }
+                    Get.closeAllSnackbars();
 
                     showDialog(
                       context: context,

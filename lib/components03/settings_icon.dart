@@ -7,8 +7,8 @@ import 'package:get/get.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:azaadi_vpn_android/pages/settings_page.dart';
 
-class SettingsIcon extends StatelessWidget {
-  const SettingsIcon({super.key});
+class SettingsIcon2 extends StatelessWidget {
+  const SettingsIcon2({super.key});
 
   @override
   Widget build(BuildContext context) {

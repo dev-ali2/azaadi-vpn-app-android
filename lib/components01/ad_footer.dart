@@ -1,8 +1,5 @@
-import 'dart:developer';
-
 import 'package:azaadi_vpn_android/controller/ad_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shimmer/shimmer.dart';
 

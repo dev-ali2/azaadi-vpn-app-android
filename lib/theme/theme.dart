@@ -10,4 +10,7 @@ class DefaultTheme {
 class AppColors {
   static final Color premiumText = Colors.orange;
   static final Color black = Colors.black;
+  //azaadi theme 1
+  static final Color azaadiRed = Colors.red;
+  static final Color azaadiGreen = Colors.green;
 }

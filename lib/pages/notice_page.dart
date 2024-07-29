@@ -1,3 +1,4 @@
+import 'package:azaadi_vpn_android/controller/color_controller.dart';
 import 'package:azaadi_vpn_android/home/default_home.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,6 +20,7 @@ class NoticePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final colors = Get.find<ColorController>();
     return Scaffold(
       backgroundColor: Color.fromARGB(255, 0, 0, 0),
       appBar: AppBar(
@@ -38,11 +40,7 @@ class NoticePage extends StatelessWidget {
             width: size.width * 0.9,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              gradient: LinearGradient(begin: Alignment.centerLeft, colors: [
-                Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                Theme.of(context).colorScheme.tertiary.withOpacity(0.3),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.3)
-              ]),
+              gradient: colors.appFootergradient(context),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

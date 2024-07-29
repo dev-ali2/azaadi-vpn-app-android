@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:ffi';
 import 'dart:math' as math;
-import 'dart:ui';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
@@ -10,14 +8,12 @@ import 'package:azaadi_vpn_android/controller/notification_controller.dart';
 import 'package:azaadi_vpn_android/widgets/permission_promt_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:azaadi_vpn_android/apis/apis.dart';
-import 'package:azaadi_vpn_android/controller/fetch_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/controller/statistics_controller.dart';
 import 'package:azaadi_vpn_android/core/models/services/vpn_engine.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
 import 'package:azaadi_vpn_android/core/models/vpn_config.dart';
-// Import package
+
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -67,6 +63,7 @@ class ConnectionController extends GetxController {
 
   Future<void> connectVpn() async {
     log('Tapped');
+
     hapticController.provideFeedback(FeedbackType.medium);
     bool isUnderTesting = await HiveController.getIsUnderTesting;
     bool isInitial = HiveController.getIsInitialConnection;
@@ -95,61 +92,35 @@ class ConnectionController extends GetxController {
       return;
     }
 
-    Future.delayed(Duration(milliseconds: 0)).then((value) async {
-      if (vpnState.value != 'Disconnected') {
-        VpnEngine.stopVpn();
-        vpnState.value = 'Disconnected';
-        return;
-      }
-      try {
-        final Vpn lastConnectedVpn = HiveController.lastConnected;
-        if (lastConnectedVpn.openVPNConfigDataBase64 != '') {
-          vpn.value = lastConnectedVpn;
-          log('found saved vpn');
-          // foundSavedVpn.value = true;
-          manualConnection(vpn.value);
-        } else {
-          vpnState.value = 'Finding servers';
-          // final List<Vpn> vpns = await FetchController.getVPNServers();
-          final vpns = await HiveController.getVpnList;
-          if (vpns.length <= 1) {
-            vpnState.value = 'No available servers, exiting...';
-            await Future.delayed(Duration(seconds: 2)).then((value) {
-              VpnEngine.stopVpn();
-              vpnState.value = 'Disconnected';
-              return;
-            });
-          }
-          log('no previous vpn was found');
-          manualConnection(vpns[1]);
-          // log('Connecting to vpn hostname : ${vpn.value.hostname}');
-          // foundSavedVpn.value = false;
+    if (vpnState.value != 'Disconnected') {
+      VpnEngine.stopVpn();
+      vpnState.value = 'Disconnected';
+      return;
+    }
+    try {
+      final Vpn lastConnectedVpn = HiveController.lastConnected;
+
+      if (lastConnectedVpn.openVPNConfigDataBase64 != '') {
+        vpn.value = lastConnectedVpn;
+        manualConnection(vpn.value);
+      } else {
+        vpnState.value = 'Finding servers';
+        // final List<Vpn> vpns = await FetchController.getVPNServers();
+        final vpns = await HiveController.getVpnList;
+        if (vpns.length <= 1) {
+          vpnState.value = 'No available servers, exiting...';
+          await Future.delayed(Duration(seconds: 1)).then((value) {
+            VpnEngine.stopVpn();
+            vpnState.value = 'Disconnected';
+            return;
+          });
         }
 
-        // log('from home controller got vpn list with length ${vpns.length}');
-        // vpn.value = vpns[10];
-
-        ///Stop right here if user not select a vpn
-        // if (vpn.value.openVPNConfigDataBase64.isEmpty) {
-        //   log('from home controller vpnconfig empty so returning');
-        // }
-        // log('not returned here');
-
-        // if (vpnState.value == 'Disconnected') {
-        //   //converting given encrypted openvpn data from encoded to utf format
-        //   log('Time to start engine');
-        //   VpnConfig vpnData = decodeData();
-
-        //   ///Start if stage is disconnected
-        //   VpnEngine.startVpn(vpnData);
-        // } else {
-        //   ///Stop if stage is "not" disconnected
-        //   VpnEngine.stopVpn();
-        // }
-      } catch (e) {
-        log('error from home controller ${e.toString()}');
+        manualConnection(vpns[0]);
       }
-    });
+    } catch (e) {
+      log('error from home controller ${e.toString()}');
+    }
   }
 
   Color buttonColor(BuildContext context) {
@@ -173,11 +144,12 @@ class ConnectionController extends GetxController {
       case 'No available servers, exiting...':
         return Colors.teal;
       default:
-        return Theme.of(context).colorScheme.primary;
+        return Colors.brown;
     }
   }
 
-  void manualConnection(Vpn v) {
+  void manualConnection(Vpn v,
+      {List<Vpn> list = const [], bool isManual = false}) {
     bool isInitial = HiveController.getIsInitialConnection;
     if (isInitial) {
       HiveController.setIsInitialConnection = false;
@@ -203,9 +175,9 @@ class ConnectionController extends GetxController {
       Future.delayed(Duration(milliseconds: 1000))
           .then((value) => vpnState.value = 'Confirming location');
 
-      Future.delayed(Duration(milliseconds: 3000)).then((value) {
+      Future.delayed(Duration(milliseconds: 2000)).then((value) {
         VpnEngine.startVpn(vpnData);
-        validateConnection();
+        validateConnection(list: list);
       });
     } catch (e) {
       // log('error in manuual connection function : ${e.toString()}');
@@ -239,7 +211,7 @@ class ConnectionController extends GetxController {
       case VpnEngine.vpnDisconnected:
         return 'Disconnected';
       case VpnEngine.vpnNoConnection:
-        return 'No Connections';
+        return 'Retrying...';
       case VpnEngine.vpnPrepare:
         return 'Starting Vpn';
       case VpnEngine.vpnReconnect:
@@ -252,25 +224,29 @@ class ConnectionController extends GetxController {
   }
 
   //validate connection
-  void validateConnection() {
+  void validateConnection({List<Vpn> list = const []}) {
     // log('running validate');
     isConnectionStarted.value = true;
+    int initialNoOfTries = list.length;
+    int noOfTries = list.length;
     Future.delayed(Duration(seconds: 12)).then((value) async {
       if (vpnState.value != 'Connected' && vpnState.value != 'Disconnected') {
         VpnEngine.stopVpn();
         vpnState.value = 'Retrying...';
-        final List<Vpn> servers = await HiveController.getVpnList;
-        // log('from validate got saved vpn list with ${servers.length} enteries');
+        List<Vpn> servers = [];
+        if (list.isNotEmpty && noOfTries > 1) {
+          servers.addAll(list);
+          noOfTries = noOfTries - 1;
+        } else {
+          if (initialNoOfTries != noOfTries) {
+            randInt.clear();
+          }
+          servers = await HiveController.getVpnList;
+        }
+        // final List<Vpn> servers = await HiveController.getVpnList;
 
-        // final List<Vpn> servers = [];
-        // final tempList =
-        //     await Supabase.instance.client.from('vpns_table').select();
-        // log('in validation got vpn list ${tempList.length}');
-        // for (int i = 0; i < tempList.length; i++) {
-        //   servers.add(Vpn.fromJson(tempList[i]));
-        // }
         int randomNumber = generateRandomInt(servers.length);
-        // log('random number is ${randomNumber}');
+
         final Vpn selectedServer = servers[randomNumber];
         vpn.value = selectedServer;
 
@@ -325,5 +301,52 @@ class ConnectionController extends GetxController {
     } catch (e) {
       //TODO:
     }
+  }
+
+  List<Map<String, String>> getAvailableLocations() {
+    final List<Vpn> savedVpns = HiveController.getVpnList;
+    final Set<String> setCountryNamesLong =
+        savedVpns.map((e) => e.countryLong).toSet();
+    final Set<String> setCountryNamesShort =
+        savedVpns.map((e) => e.countryShort).toSet();
+    List<String> listCountryNamesLong = [];
+    List<String> listCountryNamesShort = [];
+    List<Map<String, String>> finalDetails = [];
+    listCountryNamesLong.addAll(setCountryNamesLong);
+    listCountryNamesShort.addAll(setCountryNamesShort);
+
+    for (int i = 0; i < listCountryNamesLong.length; i++) {
+      finalDetails.add({
+        'country': listCountryNamesLong[i],
+        'code': listCountryNamesShort[i],
+        'flag': 'assets/flags/${listCountryNamesShort[i]}.png',
+      });
+    }
+    finalDetails.sort((a, b) => a['country']!.compareTo(b['country']!));
+
+    return finalDetails;
+  }
+
+  void trySelectedLocation(String name) async {
+    final List<Vpn> savedVpns = HiveController.getVpnList;
+    List<Vpn> selectedServers = [];
+    selectedServers
+        .addAll(savedVpns.where((element) => element.countryLong == name));
+    // log('select location servers ${selectedServers.length}');
+    await Future.delayed(Duration(milliseconds: 300));
+    Get.back();
+    await Future.delayed(Duration(milliseconds: 300));
+    Get.back();
+
+    manualConnection(selectedServers.first,
+        list: selectedServers, isManual: true);
+  }
+
+  int noOfServers(String name) {
+    final List<Vpn> savedVpns = HiveController.getVpnList;
+    List<Vpn> selectedServers = [];
+    selectedServers
+        .addAll(savedVpns.where((element) => element.countryLong == name));
+    return selectedServers.length;
   }
 }

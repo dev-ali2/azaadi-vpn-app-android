@@ -169,6 +169,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.0"
+  cupertino_icons:
+    dependency: "direct main"
+    description:
+      name: cupertino_icons
+      sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.8"
   device_info:
     dependency: transitive
     description:
@@ -368,6 +376,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.0"
+  in_app_purchase:
+    dependency: "direct main"
+    description:
+      name: in_app_purchase
+      sha256: "960f26a08d9351fb8f89f08901f8a829d41b04d45a694b8f776121d9e41dcad6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
+  in_app_purchase_android:
+    dependency: transitive
+    description:
+      name: in_app_purchase_android
+      sha256: "3d84d1a001fa138bed09e0cd95e9dbce268dce8b6f63bda7cf69cbf9135fbfbb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.6"
+  in_app_purchase_platform_interface:
+    dependency: transitive
+    description:
+      name: in_app_purchase_platform_interface
+      sha256: "1d353d38251da5b9fea6635c0ebfc6bb17a2d28d0e86ea5e083bf64244f1fb4c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
+  in_app_purchase_storekit:
+    dependency: transitive
+    description:
+      name: in_app_purchase_storekit
+      sha256: a4b523cdad26d9c81fe1f35636b9d46c459f6c07b84a93ae5cbdd93b21670eea
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.17+2"
   intl:
     dependency: transitive
     description:

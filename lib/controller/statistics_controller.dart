@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:ffi';
-
 import 'package:get/get.dart';
 
 class StatsController extends GetxController {

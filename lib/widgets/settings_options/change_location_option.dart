@@ -52,7 +52,7 @@ class ChangeLocationOption extends StatelessWidget {
                         fontSize: 12,
                       )),
                       children: [
-                    TextSpan(text: 'Current : '),
+                    TextSpan(text: 'Selected : '),
                     TextSpan(
                         text: premiumController.isPremium.value
                             ? HiveController.lastConnected.countryLong != ''

@@ -1,30 +1,31 @@
-import 'dart:developer';
-
+import 'package:azaadi_vpn_android/controller/color_controller.dart';
+import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:azaadi_vpn_android/controller/connection_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
-import 'package:azaadi_vpn_android/helpers/byte_to_speed.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LocationsPage extends StatelessWidget {
   LocationsPage({super.key});
-  final List<Vpn> servers = HiveController.getVpnList;
-
-  final connectionController = Get.find<ConnectionController>();
+  static final List<Vpn> servers = HiveController.getVpnList;
 
   @override
   Widget build(BuildContext context) {
+    final connectionController = Get.find<ConnectionController>();
+    final colors = Get.find<ColorController>();
+    final hapticController = Get.find<HapticController>();
+    final List<Map<String, String>> locations =
+        connectionController.getAvailableLocations();
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            'Available Locations (${servers.length})',
+            'Available Locations',
             style: GoogleFonts.ptSans(
                 textStyle: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
@@ -32,218 +33,118 @@ class LocationsPage extends StatelessWidget {
                     fontSize: 25)),
           ),
         ),
-        body: servers.length <= 0
+        body: locations.length <= 0
             ? Center(
-                child: Text('No Available servers'),
+                child: Text('No Available Locations'),
               )
-            : Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: size.width * 0.02,
-                ),
-                child: SizedBox(
-                  height: size.height,
-                  child: GridView.builder(
-                    itemCount: servers.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 4 / (size.height * 0.006).toInt(),
-                        crossAxisSpacing: size.width * 0.06,
-                        mainAxisSpacing: size.height * 0.05),
-                    itemBuilder: (context, index) => Material(
-                      borderRadius: BorderRadius.circular(20),
-                      elevation: 10,
-                      shadowColor: Theme.of(context).colorScheme.primary,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: LinearGradient(colors: [
-                              Theme.of(context)
+            : Container(
+                height: size.height,
+                width: size.width,
+                decoration: BoxDecoration(gradient: colors.pageGradient()),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: size.width * 0.02,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                          height: size.height * 0.85,
+                          child: ListView.builder(
+                            itemCount: locations.length,
+                            itemBuilder: (context, index) => InkWell(
+                              onTap: () {
+                                hapticController
+                                    .provideFeedback(FeedbackType.light);
+                                connectionController.trySelectedLocation(
+                                    locations[index]['country']!);
+                              },
+                              borderRadius: BorderRadius.circular(15),
+                              splashColor: Theme.of(context)
                                   .colorScheme
                                   .primary
-                                  .withOpacity(0.1),
-                              Theme.of(context)
-                                  .colorScheme
-                                  .tertiary
-                                  .withOpacity(0.1),
-                              Theme.of(context)
-                                  .colorScheme
-                                  .secondary
-                                  .withOpacity(0.1)
-                            ])),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.03,
-                                      vertical: size.height * 0.01),
-                                  child: Text(
-                                    'Country',
-                                    style: GoogleFonts.ptSans(
-                                        textStyle: TextStyle(
-                                      fontSize: 13,
-                                    )),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.01,
-                                      vertical: size.height * 0.01),
-                                  child: SizedBox(
-                                    width: size.width * 0.2,
+                                  .withOpacity(0.3),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(15)),
+                                margin: EdgeInsets.symmetric(
+                                    vertical: size.height * 0.01),
+                                child: ListTile(
+                                  // trailing: Icon(
+                                  //   LucideIcons.arrowRight,
+                                  //   color:
+                                  //       Theme.of(context).colorScheme.primary,
+                                  //   size: 20,
+                                  // ),
+                                  trailing: connectionController.noOfServers(
+                                              locations[index]['country']!) <
+                                          3
+                                      ? Icon(
+                                          Icons.speed,
+                                          color: Colors.red,
+                                        )
+                                      : connectionController.noOfServers(
+                                                  locations[index]
+                                                      ['country']!) <
+                                              8
+                                          ? Icon(
+                                              Icons.speed,
+                                              color: Colors.yellow,
+                                            )
+                                          : connectionController.noOfServers(
+                                                      locations[index]
+                                                          ['country']!) >=
+                                                  15
+                                              ? Icon(
+                                                  Icons.speed,
+                                                  color: Colors.green,
+                                                )
+                                              : null,
+                                  title: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: size.width * 0.04),
                                     child: Text(
-                                      softWrap: true,
-                                      servers[index].countryLong.toUpperCase(),
+                                      locations[index]['country']!,
                                       style: GoogleFonts.ptSans(
                                           textStyle: TextStyle(
                                               overflow: TextOverflow.fade,
-                                              fontSize: 14,
+                                              fontSize: 15,
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .primary,
                                               fontWeight: FontWeight.bold)),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.03,
-                                      vertical: size.height * 0.01),
-                                  child: Text(
-                                    'Symbol',
-                                    style: GoogleFonts.ptSans(
-                                        textStyle: TextStyle(
-                                      fontSize: 13,
-                                    )),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.03,
-                                      vertical: size.height * 0.01),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(3),
-                                    child: Image.asset(
-                                      'assets/flags/${servers[index].countryShort.toLowerCase()}.png',
-                                      fit: BoxFit.cover,
-                                      height: size.width * 0.05,
-                                      width: size.width * 0.07,
+                                  leading: SizedBox(
+                                    width: 60,
+                                    height: 40,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(5),
+                                      child: Image.asset(
+                                          fit: BoxFit.cover,
+                                          // width: 80,
+                                          // height: 60,
+                                          locations[index]['flag']!
+                                              .toLowerCase()),
                                     ),
                                   ),
                                 ),
-                              ],
+                              ),
                             ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.03,
-                                      vertical: size.height * 0.01),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Speed ',
-                                        style: GoogleFonts.ptSans(
-                                            textStyle: TextStyle(
-                                          fontSize: 13,
-                                        )),
-                                      ),
-                                      Icon(
-                                        Icons.speed,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        size: 17,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.03,
-                                      vertical: size.height * 0.01),
-                                  child: Text(
-                                    ByteToSpeedConversion.formatBytes(
-                                        servers[index].speed, 0),
-                                    style: GoogleFonts.ptSans(
-                                        textStyle: TextStyle(
-                                            fontSize: 14,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.03,
-                                      vertical: size.height * 0.01),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        'Connections ',
-                                        style: GoogleFonts.ptSans(
-                                            textStyle: TextStyle(
-                                          fontSize: 13,
-                                        )),
-                                      ),
-                                      Icon(
-                                        Icons.people,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
-                                        size: 17,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: size.width * 0.03,
-                                      vertical: size.height * 0.01),
-                                  child: Text(
-                                    servers[index].numVpnSessions.toString(),
-                                    style: GoogleFonts.ptSans(
-                                        textStyle: TextStyle(
-                                            fontSize: 14,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                            fontWeight: FontWeight.bold)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  connectionController
-                                      .manualConnection(servers[index]);
-                                },
-                                child: Text('Connect'))
-                          ],
+                          )),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: size.height * 0.015),
+                        child: Text(
+                          'More locations will be added soon...',
+                          style: GoogleFonts.ptSans(
+                              textStyle: TextStyle(
+                            overflow: TextOverflow.fade,
+                            fontSize: 15,
+                          )),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ));

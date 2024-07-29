@@ -27,7 +27,7 @@ class _TempServersPageState extends State<TempServersPage> {
             }
             return Column(
               children: [
-                Text('Length of data got ${s.data!.length ?? 0}'),
+                Text('Length of data got ${s.data!.length}'),
                 Text('country long ${s.data![2]['countryLong']}')
               ],
             );

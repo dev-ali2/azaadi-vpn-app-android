@@ -1,17 +1,15 @@
 import 'dart:ui';
 
+import 'package:azaadi_vpn_android/controller/color_controller.dart';
 import 'package:azaadi_vpn_android/core/models/services/vpn_engine.dart';
 import 'package:azaadi_vpn_android/core/models/vpn_status.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:azaadi_vpn_android/controller/connection_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
-import 'package:azaadi_vpn_android/helpers/byte_to_speed.dart';
 import 'package:azaadi_vpn_android/pages/locations_page.dart';
-import 'package:azaadi_vpn_android/pages/settings_page.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class MoreInfoDialog extends StatelessWidget {
@@ -20,6 +18,7 @@ class MoreInfoDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ConnectionController connectionController = Get.put(ConnectionController());
+    final colors = Get.find<ColorController>();
     Rx<Vpn> connectedVpn = Rx(HiveController.lastConnected);
     Size size = MediaQuery.of(context).size;
     return Obx(
@@ -30,12 +29,7 @@ class MoreInfoDialog extends StatelessWidget {
             child: Container(
               width: size.width * 0.9,
               decoration: BoxDecoration(
-                  gradient:
-                      LinearGradient(begin: Alignment.centerLeft, colors: [
-                    Theme.of(context).colorScheme.primary.withOpacity(0.15),
-                    Theme.of(context).colorScheme.tertiary.withOpacity(0.15),
-                    Theme.of(context).colorScheme.secondary.withOpacity(0.15)
-                  ]),
+                  gradient: colors.appFootergradient(context),
                   borderRadius: BorderRadius.circular(15)),
               child: SingleChildScrollView(
                 child: Column(
@@ -123,7 +117,7 @@ class MoreInfoDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Delay  ',
+                            'Ping ',
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -142,8 +136,6 @@ class MoreInfoDialog extends StatelessWidget {
                         ],
                       ),
                     ),
-
-                    //fourth row
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: size.width * 0.08,
@@ -153,7 +145,7 @@ class MoreInfoDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Server Bandwidth ',
+                            'Encryption type ',
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -161,8 +153,7 @@ class MoreInfoDialog extends StatelessWidget {
                               softWrap: true,
                               connectionController.vpnState.value != 'Connected'
                                   ? 'Unavailable'
-                                  : ByteToSpeedConversion.formatBytes(
-                                      connectedVpn.value.speed, 0),
+                                  : 'SSL/TLS',
                               style: TextStyle(
                                   overflow: TextOverflow.fade,
                                   color: Theme.of(context).colorScheme.primary,
@@ -174,6 +165,36 @@ class MoreInfoDialog extends StatelessWidget {
                       ),
                     ),
 
+                    //fourth row
+                    // Padding(
+                    //   padding: EdgeInsets.symmetric(
+                    //       horizontal: size.width * 0.08,
+                    //       vertical: size.height * 0.015),
+                    //   child: Row(
+                    //     mainAxisSize: MainAxisSize.max,
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Text(
+                    //         'Speed  ',
+                    //       ),
+                    //       SizedBox(
+                    //         width: size.width * 0.4,
+                    //         child: Text(
+                    //           softWrap: true,
+                    //           connectionController.vpnState.value != 'Connected'
+                    //               ? 'Unavailable'
+                    //               : '${ByteToSpeedConversion.formatBytes(connectedVpn.value.speed, 0)}',
+                    //           style: TextStyle(
+                    //               overflow: TextOverflow.fade,
+                    //               color: Theme.of(context).colorScheme.primary,
+                    //               fontWeight: FontWeight.bold,
+                    //               fontSize: 16),
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
+
                     //fifth row
                     Padding(
                       padding: EdgeInsets.symmetric(
@@ -184,7 +205,7 @@ class MoreInfoDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Assigned IP',
+                            'Public IP',
                           ),
                           SizedBox(
                             width: size.width * 0.4,
@@ -213,7 +234,7 @@ class MoreInfoDialog extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Consumed Data',
+                            'Data transmitted',
                           ),
                           SizedBox(
                               width: size.width * 0.4,
@@ -262,10 +283,8 @@ class MoreInfoDialog extends StatelessWidget {
                                 Get.back();
                               },
                               child: Text(
-                                'Back'.toUpperCase(),
-                                style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
+                                'Back',
+                                style: TextStyle(color: Colors.white),
                               )),
                           ElevatedButton.icon(
                               icon: Icon(

@@ -1,17 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 
-import 'package:azaadi_vpn_android/controller/ad_controller.dart';
-import 'package:azaadi_vpn_android/controller/connection_controller.dart';
-import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/controller/init_controllers.dart';
-import 'package:azaadi_vpn_android/controller/notification_controller.dart';
-import 'package:azaadi_vpn_android/controller/premium_controller.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
-import 'package:azaadi_vpn_android/home/default_home.dart';
+import 'package:azaadi_vpn_android/models/themes_list.dart';
 import 'package:azaadi_vpn_android/pages/notice_page.dart';
-import 'package:azaadi_vpn_android/widgets/terms_accept_dialog.dart';
 
 import 'package:get/get.dart';
 import 'package:http/http.dart';
@@ -102,7 +95,7 @@ class SplashController extends GetxController {
           try {
             HiveController.setIsUnderTesting = appStatus.first['is_testing'];
             await supabase.from('users_stats').insert({
-              'is_premium': true, //TODO set this false later
+              'is_premium': false, //TODO set this false later
               'is_blocked': false,
               'app_version': info['appVersion'],
               'app_package': info['packageName'],
@@ -172,7 +165,10 @@ class SplashController extends GetxController {
         }
         HiveController.setVpnList = finalList;
 
-        // initializing controllers
+        //?Setting promo code
+
+        HiveController.setPromoCode = appStatus.first['promo_code'] ?? '';
+        // log('Promo code is ${HiveController.getPromoCode}');
         InitControllers.initControllers();
 
         //? check app version update
@@ -185,8 +181,6 @@ class SplashController extends GetxController {
         String onlineAppVersion = appStatus.first['app_version'] as String;
         onlineAppVersion = onlineAppVersion.replaceAll('.', '');
         int finalOnlineVersion = int.parse(onlineAppVersion);
-        // log('saved int value $finalSavedVersion');
-        // log('online int value $finalOnlineVersion');
 
         if (finalOnlineVersion > finalSavedVersion) {
           Get.offAll(
@@ -204,12 +198,12 @@ class SplashController extends GetxController {
         }
 
         //? check terms status
-        bool termsStatus = await HiveController.getTermsStatus;
-        if (!termsStatus) {
-          Get.offAll(transition: Transition.fade, () => TermsAcceptDialog());
+        // bool termsStatus = await HiveController.getTermsStatus;
+        // if (termsStatus) {
+        //   Get.offAll(transition: Transition.fade, () => TermsAcceptPage());
 
-          return;
-        }
+        //   return;
+        // }
 
         //? check notes
         String notesFromStorage = HiveController.getNotice;
@@ -237,7 +231,7 @@ class SplashController extends GetxController {
           Get.offAll(
               transition: Transition.fade,
               duration: Duration(milliseconds: 1000),
-              () => DefaultHomeScreen());
+              () => ThemesList.showHomeScreen());
         });
       } catch (e) {
         // log(e.toString());

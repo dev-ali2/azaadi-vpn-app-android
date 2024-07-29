@@ -1,4 +1,5 @@
 import 'package:azaadi_vpn_android/controller/ad_controller.dart';
+import 'package:azaadi_vpn_android/controller/color_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +14,7 @@ class SettingsInfoPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final nativeAd = AdController.loadNativeAd();
+    final colors = Get.find<ColorController>();
 
     Size size = MediaQuery.of(context).size;
     return Obx(
@@ -33,24 +35,29 @@ class SettingsInfoPage extends StatelessWidget {
                       fontSize: 25)),
             ),
           ),
-          body: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: size.height * 0.02,
-                          horizontal: size.width * 0.03),
-                      child: Text(
-                        description.replaceAll('//', '\n\n'),
-                        style: GoogleFonts.ptSans(
-                            textStyle: TextStyle(fontSize: 18)),
+          body: Container(
+            height: size.height,
+            width: size.width,
+            decoration: BoxDecoration(gradient: colors.pageGradient()),
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: size.height * 0.02,
+                            horizontal: size.width * 0.03),
+                        child: Text(
+                          description.replaceAll('//', '\n\n'),
+                          style: GoogleFonts.ptSans(
+                              textStyle: TextStyle(fontSize: 18)),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

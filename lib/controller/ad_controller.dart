@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
-import 'package:azaadi_vpn_android/pages/settings_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';

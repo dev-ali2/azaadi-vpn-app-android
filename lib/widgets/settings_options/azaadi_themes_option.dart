@@ -1,4 +1,7 @@
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
+import 'package:azaadi_vpn_android/controller/hive_controller.dart';
+import 'package:azaadi_vpn_android/models/themes_list.dart';
+import 'package:azaadi_vpn_android/pages/themes_page.dart';
 import 'package:azaadi_vpn_android/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gradient_animation_text/flutter_gradient_animation_text.dart';
@@ -17,16 +20,20 @@ class AzaadiThemesOption extends StatelessWidget {
     return InkWell(
       onTap: () {
         hapticController.provideFeedback(FeedbackType.light);
-        Get.closeAllSnackbars();
-        Get.snackbar(
-            margin: EdgeInsets.symmetric(
-                vertical: size.height * 0.02, horizontal: size.width * 0.01),
-            icon: Icon(
-              LucideIcons.paintBucket,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            'Coming soon',
-            'Currently under development');
+        // Get.closeAllSnackbars();
+        // Get.snackbar(
+        //     margin: EdgeInsets.symmetric(
+        //         vertical: size.height * 0.02, horizontal: size.width * 0.01), //TODO: delete useless
+        //     icon: Icon(
+        //       LucideIcons.paintBucket,
+        //       color: Theme.of(context).colorScheme.primary,
+        //     ),
+        //     'Coming soon',
+        //     'Currently under development');
+        Future.delayed(Duration(milliseconds: 300)).then((value) => Get.to(
+            transition: Transition.cupertino,
+            duration: Duration(milliseconds: 400),
+            () => ThemesPage()));
       },
       borderRadius: BorderRadius.circular(20),
       splashColor: Theme.of(context).colorScheme.onSecondary,
@@ -51,7 +58,8 @@ class AzaadiThemesOption extends StatelessWidget {
                         children: [
                       TextSpan(text: 'Current '),
                       TextSpan(
-                          text: 'Default',
+                          text: ThemesList.themesInfo[HiveController.getTheme]
+                              ['name'],
                           style: GoogleFonts.ptSans(
                               textStyle: TextStyle(
                                   fontWeight: FontWeight.bold,

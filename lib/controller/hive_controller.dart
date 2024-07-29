@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -15,7 +14,7 @@ class HiveController extends GetxController {
     // log('local storage enabled!');
 
     try {
-      final List savedList = await jsonDecode(_box.get('vpnList2'));
+      // final List savedList = await jsonDecode(_box.get('vpnList2'));
       // log('total saved vpns are ${savedList.length}');
     } catch (e) {
       // log('no last connected vpn');
@@ -72,7 +71,7 @@ class HiveController extends GetxController {
 
   //premium getter and setter
   static bool get getIsPremium =>
-      _box.get('isPremium') ?? true; //TODO set this to false later
+      _box.get('isPremium') ?? false; //TODO set this to false later
   static set setIsPremium(bool b) {
     _box.put('isPremium', b);
     // log('Is Premium ${_box.get('isPremium')}');
@@ -173,5 +172,17 @@ class HiveController extends GetxController {
   static bool get getIsUnderTesting => _box.get('testingStatus') ?? false;
   static set setIsUnderTesting(bool b) {
     _box.put('testingStatus', b);
+  }
+
+  //theme getter and setter
+  static int get getTheme => _box.get('theme') ?? 0;
+  static set setTheme(int i) {
+    _box.put('theme', i);
+  }
+
+  //promo code getter and setter
+  static String get getPromoCode => _box.get('promocode') ?? '';
+  static set setPromoCode(String s) {
+    _box.put('promocode', s);
   }
 }
