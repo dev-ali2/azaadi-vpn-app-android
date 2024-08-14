@@ -53,7 +53,7 @@ class TermsAcceptPage extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
                 child: Text(
                   softWrap: true,
-                  'Before you start using Azaadi Vpn, we want to ensure you are fully informed about how we handle your data and the permissions we require.\n\nTo provide the best experience, Azaadi Vpn needs to collect some data. This includes but may not limited to:\n\n1. Device ID\n2. IP address (including country, time zone, ISP and other relavent info)\n3. Name and email address (if provided)\n\nTo read more about why we collect this data and how we use it, please read our full privacy policy below',
+                  'Before you start using Azaadi Vpn, we want to ensure you are fully informed about how we handle your data and the permissions we require.\n\nTo provide the best experience, Azaadi Vpn needs to collect some data. This includes but may not limited to:\n\n1. Device ID\n2. IP address (including country, time zone, ISP and other relavent info)\n3. Name and email address (if provided)\n4. UserID and in app activity\n\nTo read more about why we collect this data and how we use it, please read our full privacy policy below',
                   style: TextStyle(fontSize: 18, overflow: TextOverflow.clip),
                 ),
               ),

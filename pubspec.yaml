@@ -34,6 +34,9 @@ dependencies:
   store_redirect: ^2.0.2
   google_mobile_ads: ^5.1.0
   in_app_purchase: ^3.2.0
+  # purchases_flutter:
+  # purchases_ui_flutter: ^7.0.1
+  wakelock_plus: ^1.2.7
 
 dev_dependencies:
   flutter_test:

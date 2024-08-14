@@ -24,20 +24,8 @@ class ValidateLocationsOption extends StatelessWidget {
               ? LoadingAnimationWidget.staggeredDotsWave(
                   color: Theme.of(context).colorScheme.primary, size: 25)
               : TextButton(
-                  onPressed: () {
-                    connectionController.validateServers().then((value) {
-                      Get.closeAllSnackbars();
-                      Get.snackbar(
-                          margin: EdgeInsets.symmetric(
-                              vertical: size.height * 0.02,
-                              horizontal: size.width * 0.01),
-                          icon: Icon(
-                            LucideIcons.server,
-                            color: Theme.of(context).colorScheme.primary,
-                          ),
-                          'Validation successful',
-                          'Please try to connet now');
-                    });
+                  onPressed: () async {
+                    await connectionController.validateServers(context);
                   },
                   child: Text('Validate'),
                 ),

@@ -63,63 +63,68 @@ class ConnectionController extends GetxController {
 
   Future<void> connectVpn() async {
     log('Tapped');
-
-    hapticController.provideFeedback(FeedbackType.medium);
-    bool isUnderTesting = await HiveController.getIsUnderTesting;
-    bool isInitial = HiveController.getIsInitialConnection;
-
-    if (isUnderTesting) {
-      Get.closeAllSnackbars();
-      Get.snackbar(
-          duration: Duration(seconds: 3),
-          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          icon: Icon(
-            LucideIcons.testTubeDiagonal,
-            color: Colors.green,
-          ),
-          'Tester mode',
-          'Conecting to servers is not available for testers right now');
-      return;
-    }
-    if (isInitial) {
-      HiveController.setIsInitialConnection = false;
-      Get.to(
-          transition: Transition.fadeIn,
-          () => PermissionsPromtDialog(
-              description:
-                  'This will allow the app to create a secure vpn tunnel to encrypt the outgoing or incoming traffic\nNext time when you will click this button, the system will promt you to give this permission\nYou can easily allow or deny it from that system dialog',
-              type: 'Vpn tunnel creation'));
-      return;
-    }
-
     if (vpnState.value != 'Disconnected') {
       VpnEngine.stopVpn();
+      isConnectionStarted.value = false;
       vpnState.value = 'Disconnected';
       return;
     }
+
     try {
-      final Vpn lastConnectedVpn = HiveController.lastConnected;
+      hapticController.provideFeedback(FeedbackType.medium);
+      bool isUnderTesting = await HiveController.getIsUnderTesting;
+      bool isInitial = HiveController.getIsInitialConnection;
 
-      if (lastConnectedVpn.openVPNConfigDataBase64 != '') {
-        vpn.value = lastConnectedVpn;
-        manualConnection(vpn.value);
-      } else {
-        vpnState.value = 'Finding servers';
-        // final List<Vpn> vpns = await FetchController.getVPNServers();
-        final vpns = await HiveController.getVpnList;
-        if (vpns.length <= 1) {
-          vpnState.value = 'No available servers, exiting...';
-          await Future.delayed(Duration(seconds: 1)).then((value) {
-            VpnEngine.stopVpn();
-            vpnState.value = 'Disconnected';
-            return;
-          });
-        }
-
-        manualConnection(vpns[0]);
+      if (isUnderTesting) {
+        Get.closeAllSnackbars();
+        Get.snackbar(
+            duration: Duration(seconds: 3),
+            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            icon: Icon(
+              LucideIcons.testTubeDiagonal,
+              color: Colors.green,
+            ),
+            'Tester mode',
+            'Conecting to servers is not available for testers right now');
+        return;
       }
-    } catch (e) {
-      log('error from home controller ${e.toString()}');
+      if (isInitial) {
+        HiveController.setIsInitialConnection = false;
+        Get.to(
+            transition: Transition.fadeIn,
+            () => PermissionsPromtDialog(
+                description:
+                    'This will allow the app to create a secure vpn tunnel to encrypt the outgoing or incoming traffic\nNext time when you will click this button, the system will promt you to give this permission\nYou can easily allow or deny it from that system dialog',
+                type: 'Vpn tunnel creation'));
+        return;
+      }
+
+      try {
+        final Vpn lastConnectedVpn = HiveController.lastConnected;
+
+        if (lastConnectedVpn.openVPNConfigDataBase64 != '') {
+          vpn.value = lastConnectedVpn;
+          manualConnection(vpn.value);
+        } else {
+          vpnState.value = 'Finding servers';
+          // final List<Vpn> vpns = await FetchController.getVPNServers();
+          final vpns = await HiveController.getVpnList;
+          if (vpns.length <= 1) {
+            vpnState.value = 'No available locations';
+            await Future.delayed(Duration(seconds: 2)).then((value) {
+              VpnEngine.stopVpn();
+              vpnState.value = 'Disconnected';
+              return;
+            });
+          }
+
+          manualConnection(vpns[0]);
+        }
+      } catch (e) {
+        log('error from home controller ${e.toString()}');
+      }
+    } catch (r) {
+      log(r.toString());
     }
   }
 
@@ -141,7 +146,7 @@ class ConnectionController extends GetxController {
         return Colors.deepPurple;
       case 'Trying to reconnect':
         return const Color.fromARGB(255, 255, 101, 101);
-      case 'No available servers, exiting...':
+      case 'No available locations':
         return Colors.teal;
       default:
         return Colors.brown;
@@ -151,6 +156,7 @@ class ConnectionController extends GetxController {
   void manualConnection(Vpn v,
       {List<Vpn> list = const [], bool isManual = false}) {
     bool isInitial = HiveController.getIsInitialConnection;
+
     if (isInitial) {
       HiveController.setIsInitialConnection = false;
       Get.to(
@@ -163,6 +169,7 @@ class ConnectionController extends GetxController {
     }
     try {
       vpn.value = v;
+
       if (vpnState.value != 'Disconnected') {
         VpnEngine.stopVpn();
       }
@@ -172,12 +179,12 @@ class ConnectionController extends GetxController {
               .then((value) => Get.back()));
       final VpnConfig vpnData = decodeData();
 
-      Future.delayed(Duration(milliseconds: 1000))
+      Future.delayed(Duration(milliseconds: 200))
           .then((value) => vpnState.value = 'Confirming location');
 
-      Future.delayed(Duration(milliseconds: 2000)).then((value) {
-        VpnEngine.startVpn(vpnData);
+      Future.delayed(Duration(milliseconds: 200)).then((value) {
         validateConnection(list: list);
+        VpnEngine.startVpn(vpnData);
       });
     } catch (e) {
       // log('error in manuual connection function : ${e.toString()}');
@@ -225,14 +232,16 @@ class ConnectionController extends GetxController {
 
   //validate connection
   void validateConnection({List<Vpn> list = const []}) {
-    // log('running validate');
+    log('qqq validating');
     isConnectionStarted.value = true;
     int initialNoOfTries = list.length;
     int noOfTries = list.length;
     Future.delayed(Duration(seconds: 12)).then((value) async {
-      if (vpnState.value != 'Connected' && vpnState.value != 'Disconnected') {
-        VpnEngine.stopVpn();
+      if (vpnState.value != 'Connected' && isConnectionStarted.value == true) {
         vpnState.value = 'Retrying...';
+
+        VpnEngine.stopVpn();
+
         List<Vpn> servers = [];
         if (list.isNotEmpty && noOfTries > 1) {
           servers.addAll(list);
@@ -281,23 +290,35 @@ class ConnectionController extends GetxController {
       VpnEngine.stopVpn();
     }
     final VpnConfig data = decodeData();
-    VpnEngine.startVpn(data);
     validateConnection();
+    VpnEngine.startVpn(data);
   }
 
   //validate servers
-  Future<void> validateServers() async {
+  Future<void> validateServers(BuildContext context) async {
     try {
       isValidatingServers.value = true;
       final downloadedServers =
-          await Supabase.instance.client.from('vpns_table').select();
+          await Supabase.instance.client.from('vpns_table_temp').select();
       List<Vpn> finalList = [];
       for (int i = 0; i < downloadedServers.length; i++) {
         finalList.add(Vpn.fromJson(downloadedServers[i]));
       }
       finalList.shuffle();
       HiveController.setVpnList = finalList;
+      HiveController.deleteLastVpn();
+      await Future.delayed(Duration(seconds: 1));
       isValidatingServers.value = false;
+
+      Get.back();
+      Get.snackbar(
+          margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          icon: Icon(
+            LucideIcons.server,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          'Validation successful',
+          'Please try to connet now');
     } catch (e) {
       //TODO:
     }

@@ -19,7 +19,7 @@ class ThemesPage extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            'Azaadi Themes',
+            'Azaadi Themes (${ThemesList.themesInfo.length})',
             style: GoogleFonts.ptSans(
                 textStyle: TextStyle(
                     color: Theme.of(context).colorScheme.primary,

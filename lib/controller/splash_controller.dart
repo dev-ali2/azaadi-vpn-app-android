@@ -158,7 +158,8 @@ class SplashController extends GetxController {
         }
         //downloading and saving servers
         messsage.value = 'Checking locations';
-        final downloadedServers = await supabase.from('vpns_table').select();
+        final downloadedServers =
+            await supabase.from('vpns_table_temp').select(); //TODO remove _temp
         List<Vpn> finalList = [];
         for (int i = 0; i < downloadedServers.length; i++) {
           finalList.add(Vpn.fromJson(downloadedServers[i]));

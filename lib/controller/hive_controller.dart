@@ -25,6 +25,9 @@ class HiveController extends GetxController {
   static Vpn get lastConnected =>
       Vpn.fromJson(jsonDecode(_box.get('vpn') ?? '{}'));
   static set saveThisVpn(Vpn v) => _box.put('vpn', jsonEncode(v));
+  static void deleteLastVpn() {
+    _box.delete('vpn');
+  }
 
   //getting vpn list
   static List<Vpn> get getVpnList {

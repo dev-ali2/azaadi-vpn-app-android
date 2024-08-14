@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:azaadi_vpn_android/controller/color_controller.dart';
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
@@ -15,10 +17,12 @@ import 'package:azaadi_vpn_android/widgets/settings_options/report_bug_option.da
 import 'package:azaadi_vpn_android/widgets/settings_options/restore_purchase_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_options/validate_locations_option.dart';
 import 'package:azaadi_vpn_android/widgets/settings_titles.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:store_redirect/store_redirect.dart';
 
@@ -136,6 +140,37 @@ class SettingsPage extends StatelessWidget {
                                   title: 'Privacy Policy',
                                   description: privacyPolicy));
                         }),
+                    if (kDebugMode)
+                      Divider(
+                        indent: size.width * 0.1,
+                        endIndent: size.width * 0.1,
+                        thickness: 5,
+                        color: Colors.red,
+                      ),
+                    if (kDebugMode)
+                      SettingsTitles(
+                        text: 'Developer zone ⚠️',
+                        color: Colors.red,
+                      ),
+                    if (kDebugMode)
+                      CustomButton(
+                          color: Colors.red,
+                          text: 'Test purchases',
+                          onTap: () async {
+                            final init = await InAppPurchase.instance;
+                            bool isAvail = await init.isAvailable();
+                            log('Store is ${isAvail}');
+                            final findProduct = await init.queryProductDetails(
+                                ['azaadi_premium'].toSet());
+                            log('${findProduct.productDetails.first.description}');
+                            log('${findProduct.notFoundIDs}'); //?this gives a list if ids that are either incorrect or not found
+                            final purchaseParam = await PurchaseParam(
+                                productDetails:
+                                    findProduct.productDetails.first);
+                            init.buyNonConsumable(
+                                purchaseParam:
+                                    purchaseParam); //? non consumable can be bought once only
+                          }),
                   ],
                 ),
               ),

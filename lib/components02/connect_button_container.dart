@@ -99,13 +99,24 @@ class _ConnectButtonContainer1State extends State<ConnectButtonContainer1>
                             TextSpan(text: 'Status: '),
                             TextSpan(
                                 text: connectionController.vpnState.value ==
-                                        VpnEngine.vpnDisconnected
+                                            'Disconnected' &&
+                                        connectionController
+                                                .isConnectionStarted.value ==
+                                            false
                                     ? 'Disconnected'
                                     : connectionController.vpnState.value ==
-                                            'Connected'
-                                        ? 'Connected 🤠'
-                                        : connectionController.vpnState.value
-                                            .replaceAll("_", " "),
+                                                'Disconnected' &&
+                                            connectionController
+                                                    .isConnectionStarted
+                                                    .value ==
+                                                true
+                                        ? 'Preparing to retry...'
+                                        : connectionController.vpnState.value ==
+                                                'Connected'
+                                            ? 'Connected 🤠'
+                                            : connectionController
+                                                .vpnState.value
+                                                .replaceAll("_", " "),
                                 style: TextStyle(
                                     color: connectionController
                                                 .vpnState.value ==

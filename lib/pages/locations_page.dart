@@ -1,5 +1,6 @@
 import 'package:azaadi_vpn_android/controller/color_controller.dart';
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:azaadi_vpn_android/controller/connection_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class LocationsPage extends StatelessWidget {
   LocationsPage({super.key});
@@ -25,7 +27,7 @@ class LocationsPage extends StatelessWidget {
         appBar: AppBar(
           centerTitle: true,
           title: Text(
-            'Available Locations',
+            'Available Locations (${locations.length})',
             style: GoogleFonts.ptSans(
                 textStyle: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
@@ -35,7 +37,7 @@ class LocationsPage extends StatelessWidget {
         ),
         body: locations.length <= 0
             ? Center(
-                child: Text('No Available Locations'),
+                child: Text('No Available Locations\nTry restarting the app'),
               )
             : Container(
                 height: size.height,
@@ -77,30 +79,35 @@ class LocationsPage extends StatelessWidget {
                                   //       Theme.of(context).colorScheme.primary,
                                   //   size: 20,
                                   // ),
-                                  trailing: connectionController.noOfServers(
-                                              locations[index]['country']!) <
-                                          3
-                                      ? Icon(
-                                          Icons.speed,
-                                          color: Colors.red,
-                                        )
-                                      : connectionController.noOfServers(
-                                                  locations[index]
-                                                      ['country']!) <
-                                              8
-                                          ? Icon(
-                                              Icons.speed,
-                                              color: Colors.yellow,
-                                            )
-                                          : connectionController.noOfServers(
-                                                      locations[index]
-                                                          ['country']!) >=
-                                                  15
-                                              ? Icon(
-                                                  Icons.speed,
-                                                  color: Colors.green,
-                                                )
-                                              : null,
+                                  trailing: Icon(
+                                    CupertinoIcons.arrow_right_circle_fill,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                  // trailing: connectionController.noOfServers(
+                                  //             locations[index]['country']!) <
+                                  //         3
+                                  //     ? Icon(
+                                  //         Icons.speed,
+                                  //         color: Colors.red,
+                                  //       )
+                                  //     : connectionController.noOfServers(
+                                  //                 locations[index]
+                                  //                     ['country']!) <
+                                  //             8
+                                  //         ? Icon(
+                                  //             Icons.speed,
+                                  //             color: Colors.yellow,
+                                  //           )
+                                  //         : connectionController.noOfServers(
+                                  //                     locations[index]
+                                  //                         ['country']!) >=
+                                  //                 15
+                                  //             ? Icon(
+                                  //                 Icons.speed,
+                                  //                 color: Colors.green,
+                                  //               )
+                                  //             : null,
                                   title: Padding(
                                     padding: EdgeInsets.only(
                                         left: size.width * 0.04),
