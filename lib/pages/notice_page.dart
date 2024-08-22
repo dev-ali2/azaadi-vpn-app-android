@@ -42,54 +42,57 @@ class NoticePage extends StatelessWidget {
               borderRadius: BorderRadius.circular(15),
               gradient: colors.appFootergradient(context),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: size.height * 0.025),
-                  child: Text(
-                    subtitle,
-                    style: GoogleFonts.ptSans(
-                        textStyle: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                            color: Theme.of(context).colorScheme.primary)),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: size.height * 0.025),
+                    child: Text(
+                      subtitle,
+                      style: GoogleFonts.ptSans(
+                          textStyle: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                              color: Theme.of(context).colorScheme.primary)),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: size.width * 0.64,
-                        child: Text(
-                          softWrap: true,
-                          '${description.replaceAll('/', '\n\n')}',
-                          style: GoogleFonts.ptSans(
-                              textStyle: TextStyle(
-                                  fontSize: 18, overflow: TextOverflow.clip)),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: size.width * 0.1),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: size.width * 0.64,
+                          child: Text(
+                            softWrap: true,
+                            '${description.replaceAll('/', '\n\n')}',
+                            style: GoogleFonts.ptSans(
+                                textStyle: TextStyle(
+                                    fontSize: 18, overflow: TextOverflow.clip)),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                showButton
-                    ? Padding(
-                        padding: EdgeInsets.only(
-                            top: size.height * 0.05,
-                            bottom: size.height * 0.02),
-                        child: ElevatedButton(
-                            onPressed: () {
-                              Get.offAll(() => DefaultHomeScreen());
-                            },
-                            child: Text('Got it')),
-                      )
-                    : SizedBox(
-                        height: size.height * 0.06,
-                      )
-              ],
+                  showButton
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              top: size.height * 0.05,
+                              bottom: size.height * 0.02),
+                          child: ElevatedButton(
+                              onPressed: () {
+                                Get.offAll(() => DefaultHomeScreen());
+                              },
+                              child: Text('Got it')),
+                        )
+                      : SizedBox(
+                          height: size.height * 0.06,
+                        )
+                ],
+              ),
             )),
       ),
     );

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 
 import 'package:get/get.dart';
@@ -31,13 +29,13 @@ class PremiumController extends GetxController {
     }
     if (details.first.status == PurchaseStatus.purchased ||
         details.first.status == PurchaseStatus.restored) {
-      log('Yoo you bought it');
+      // log('Yoo you bought it');
     }
     if (details.first.status == PurchaseStatus.error) {
-      log('There is an error buying');
+      // log('There is an error buying');
     }
     if (details.first.status == PurchaseStatus.canceled) {
-      log('Purchase cancelled');
+      // log('Purchase cancelled');
     }
   }
 }

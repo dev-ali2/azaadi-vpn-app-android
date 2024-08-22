@@ -12,7 +12,6 @@ class ValidateLocationsOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final connectionController = Get.find<ConnectionController>();
     return Obx(() => SettingsOptionTile(
           leading: Icon(

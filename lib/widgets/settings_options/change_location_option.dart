@@ -32,7 +32,13 @@ class ChangeLocationOption extends StatelessWidget {
           } else {
             showDialog(
               context: context,
-              builder: (context) => BuyPremiumDialog(),
+              builder: (context) => BuyPremiumDialog(
+                adOption: true,
+                onComplete: () {
+                  Get.back();
+                  Get.to(() => LocationsPage());
+                },
+              ),
             );
           }
         },

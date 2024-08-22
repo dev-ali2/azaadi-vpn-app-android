@@ -1,4 +1,5 @@
 import 'package:azaadi_vpn_android/controller/ad_controller.dart';
+import 'package:azaadi_vpn_android/controller/premium_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:azaadi_vpn_android/components01/custom_appbar.dart';
 import 'package:azaadi_vpn_android/components01/ad_footer.dart';
@@ -26,7 +27,9 @@ class DefaultHomeScreen extends StatelessWidget {
               AppTitle(),
               ConnectButtonContainer(),
               AppFooterContainer(),
-              if (AdController.showAds.value) AdFooter(),
+              if (AdController.showAds.value ||
+                  !PremiumController().isPremium.value)
+                AdFooter(),
             ]),
       ),
     );

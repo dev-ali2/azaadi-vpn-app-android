@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:azaadi_vpn_android/controller/color_controller.dart';
 import 'package:azaadi_vpn_android/controller/haptic_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
@@ -157,19 +155,25 @@ class SettingsPage extends StatelessWidget {
                           color: Colors.red,
                           text: 'Test purchases',
                           onTap: () async {
-                            final init = await InAppPurchase.instance;
-                            bool isAvail = await init.isAvailable();
-                            log('Store is ${isAvail}');
-                            final findProduct = await init.queryProductDetails(
-                                ['azaadi_premium'].toSet());
-                            log('${findProduct.productDetails.first.description}');
-                            log('${findProduct.notFoundIDs}'); //?this gives a list if ids that are either incorrect or not found
-                            final purchaseParam = await PurchaseParam(
-                                productDetails:
-                                    findProduct.productDetails.first);
-                            init.buyNonConsumable(
-                                purchaseParam:
-                                    purchaseParam); //? non consumable can be bought once only
+                            try {
+                              final init = await InAppPurchase.instance;
+                              bool isAvail = await init.isAvailable();
+                              // log('qqq Store is ${isAvail}');
+                              final findProduct =
+                                  await init.queryProductDetails(
+                                      ['azaadi_premium'].toSet());
+                              // log('qqq ${findProduct.productDetails.first.description}');
+                              // log('qqq ${findProduct.productDetails.first.id}');
+                              // log('qqq ${findProduct.notFoundIDs}'); //?this gives a list if ids that are either incorrect or not found
+                              final purchaseParam = await PurchaseParam(
+                                  productDetails:
+                                      findProduct.productDetails.first);
+                              init.buyNonConsumable(
+                                  purchaseParam:
+                                      purchaseParam); //? non consumable can be bought once only
+                            } catch (e) {
+                              // log('qqq Error : ${e.toString()}');
+                            }
                           }),
                   ],
                 ),

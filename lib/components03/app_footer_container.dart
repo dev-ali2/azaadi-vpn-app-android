@@ -99,7 +99,9 @@ class AppFooterContainer2 extends StatelessWidget {
                     if (!premiumController.isPremium.value) {
                       showDialog(
                         context: context,
-                        builder: (context) => BuyPremiumDialog(),
+                        builder: (context) => BuyPremiumDialog(
+                          adOption: false,
+                        ),
                       );
                       return;
                     }

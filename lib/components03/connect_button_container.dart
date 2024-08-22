@@ -5,7 +5,6 @@ import 'package:animated_background/animated_background.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 import 'package:azaadi_vpn_android/controller/connection_controller.dart';
-import 'package:azaadi_vpn_android/core/models/services/vpn_engine.dart';
 
 class ConnectButtonContainer2 extends StatefulWidget {
   @override

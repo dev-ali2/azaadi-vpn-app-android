@@ -30,6 +30,7 @@ class _AdFooterState extends State<AdFooter> {
           },
           onAdFailedToLoad: (ad, error) {
             ad.dispose();
+
             // log('failed to load ad due to $error');
           },
           // onAdOpened: (ad) => log('Ad opened'),
@@ -68,7 +69,7 @@ class _AdFooterState extends State<AdFooter> {
             )
           : Container(
               height: size.height * 0.08,
-              child: AdWidget(ad: bannerAd!),
+              child: mounted ? AdWidget(ad: bannerAd!) : null,
             ),
     );
   }

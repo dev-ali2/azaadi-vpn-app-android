@@ -3,6 +3,7 @@ import 'package:azaadi_vpn_android/components02/app_title.dart';
 import 'package:azaadi_vpn_android/components02/connect_button_container.dart';
 import 'package:azaadi_vpn_android/components02/custom_appbar.dart';
 import 'package:azaadi_vpn_android/controller/ad_controller.dart';
+import 'package:azaadi_vpn_android/controller/premium_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:azaadi_vpn_android/components01/ad_footer.dart';
 
@@ -30,7 +31,9 @@ class HomeTheme1 extends StatelessWidget {
               AppTitle1(),
               ConnectButtonContainer1(),
               AppFooterContainer1(),
-              if (AdController.showAds.value) AdFooter(),
+              if (AdController.showAds.value ||
+                  !PremiumController().isPremium.value)
+                AdFooter(),
             ]),
       ),
     );

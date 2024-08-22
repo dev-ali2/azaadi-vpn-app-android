@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -51,7 +50,7 @@ class ConnectionController extends GetxController {
           NotificationController.showNotification(
               'Connection Status', vpnState.value);
         }
-        log('saved connected vpn');
+        // log('saved connected vpn');
         StatsController.setTimerStatus = true;
         showAnimation.value = true;
         StatsController.setEncryptionStatus = true;
@@ -62,7 +61,7 @@ class ConnectionController extends GetxController {
   }
 
   Future<void> connectVpn() async {
-    log('Tapped');
+    // log('Tapped');
     if (vpnState.value != 'Disconnected') {
       VpnEngine.stopVpn();
       isConnectionStarted.value = false;
@@ -121,10 +120,10 @@ class ConnectionController extends GetxController {
           manualConnection(vpns[0]);
         }
       } catch (e) {
-        log('error from home controller ${e.toString()}');
+        // log('error from home controller ${e.toString()}');
       }
     } catch (r) {
-      log(r.toString());
+      // log(r.toString());
     }
   }
 
@@ -232,7 +231,6 @@ class ConnectionController extends GetxController {
 
   //validate connection
   void validateConnection({List<Vpn> list = const []}) {
-    log('qqq validating');
     isConnectionStarted.value = true;
     int initialNoOfTries = list.length;
     int noOfTries = list.length;
@@ -299,7 +297,7 @@ class ConnectionController extends GetxController {
     try {
       isValidatingServers.value = true;
       final downloadedServers =
-          await Supabase.instance.client.from('vpns_table_temp').select();
+          await Supabase.instance.client.from('vpns_table').select();
       List<Vpn> finalList = [];
       for (int i = 0; i < downloadedServers.length; i++) {
         finalList.add(Vpn.fromJson(downloadedServers[i]));

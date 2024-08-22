@@ -1,51 +1,59 @@
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class AdController extends GetxController {
   static Rx<bool> isNativeAdLoaded = false.obs;
+  static Rx<bool> isRewardedAdLoading = false.obs;
   static Rx<bool> showAds = HiveController.getAdsStatus.obs;
   static Rx<bool> isBannerAdLoaded = false.obs;
   static Rx<bool> isUnderTesting = HiveController.getIsUnderTesting.obs;
   NativeAd? ad;
+  //AD IDS
+  static Map<String, dynamic> adIds = HiveController.getAdIds;
+  //Real or test Ads pref
+  static bool showRealAds = HiveController.getShowRealAds;
+
   static Future<void> initAdService() async {
     await MobileAds.instance.initialize();
   }
 
   static String get bannerAdId {
-    if (!kReleaseMode || isUnderTesting.value) {
+    if (kDebugMode || !showRealAds) {
       //test banner ad
       return 'ca-app-pub-3940256099942544/9214589741';
     }
 
-    return '';
+    return adIds['banner_id'].toString();
   }
 
   static String get iterstitialAdId {
-    if (!kReleaseMode || isUnderTesting.value) {
+    if (kDebugMode || !showRealAds) {
       //test ad
       return 'ca-app-pub-3940256099942544/1033173712';
     }
 
-    return '';
+    return adIds['interstitial_id'].toString();
   }
 
   static String get nativeTestAdId {
-    if (!kReleaseMode || isUnderTesting.value) {
+    if (kDebugMode || !showRealAds) {
       //test banner
       return 'ca-app-pub-3940256099942544/2247696110';
     }
 
-    return '';
+    return adIds['native_id'].toString();
   }
 
   static String get rewardedTestAdId {
-    if (!kReleaseMode || isUnderTesting.value) {
+    if (kDebugMode || !showRealAds) {
       //test id
       return 'ca-app-pub-3940256099942544/5224354917';
     }
-    return '';
+
+    return adIds['rewarded_id'].toString();
   }
 
 //?//?//?//?//?//!//!//!//!//!//!
@@ -129,21 +137,35 @@ class AdController extends GetxController {
     return null;
   }
 
-  static void showRewardedAd({required Function onComplete}) {
+  static void showRewardedAd({required Function? onComplete}) {
+    if (isRewardedAdLoading.value) {
+      return;
+    }
+    isRewardedAdLoading.value = true;
+
     RewardedAd.load(
       adUnitId: AdController.rewardedTestAdId,
       request: AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (ad) {
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {},
+            onAdDismissedFullScreenContent: (ad) {
+              isRewardedAdLoading.value = false;
+              ad.dispose();
+            },
           );
           ad.show(onUserEarnedReward: (ad, reward) {
-            onComplete();
+            isRewardedAdLoading.value = false;
+
+            ad.dispose();
+            if (onComplete != null) onComplete();
           });
         },
         onAdFailedToLoad: (err) {
           // log('Failed to load an interstitial ad: ${err.message}');
+          isRewardedAdLoading.value = false;
+          Get.snackbar("Ad loading Error", "Something went wrong",
+              backgroundColor: Colors.red);
         },
       ),
     );

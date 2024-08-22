@@ -36,6 +36,7 @@ class SplashController extends GetxController {
       'deviceId': deviceId
     };
     HiveController.setDeviceInfo = info;
+    // VpnEngine.stopVpn(); // TODO: uncomment this if vpn tunnel dont destroy upon force stopping app
 
     //check connection
     Future.delayed(Duration(seconds: 1)).then((value) async {
@@ -157,14 +158,26 @@ class SplashController extends GetxController {
           return;
         }
         //downloading and saving servers
-        messsage.value = 'Checking locations';
-        final downloadedServers =
-            await supabase.from('vpns_table_temp').select(); //TODO remove _temp
+        messsage.value = 'Fetching locations';
+        final downloadedServers = await supabase.from('vpns_table').select();
         List<Vpn> finalList = [];
         for (int i = 0; i < downloadedServers.length; i++) {
           finalList.add(Vpn.fromJson(downloadedServers[i]));
         }
         HiveController.setVpnList = finalList;
+
+        //Setting Ad Ids
+        messsage.value = 'Decrypting Ad keys';
+        await Future.delayed(Duration(seconds: 1));
+        HiveController.setAdIds = {
+          'banner_id': appStatus.first['banner_id'],
+          'native_id': appStatus.first['native_id'],
+          'interstitial_id': appStatus.first['interstitial_id'],
+          'rewarded_id': appStatus.first['rewarded_id']
+        };
+        //Settings real ads showing prefs
+        HiveController.setShowRealAds =
+            appStatus.first['show_real_ads'] as bool;
 
         //?Setting promo code
 

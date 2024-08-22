@@ -188,4 +188,17 @@ class HiveController extends GetxController {
   static set setPromoCode(String s) {
     _box.put('promocode', s);
   }
+
+  //Ad Ids getter and setter
+  static Map<String, dynamic> get getAdIds =>
+      jsonDecode(_box.get('adIds')) ?? {};
+  static set setAdIds(Map<String, dynamic> m) {
+    _box.put('adIds', jsonEncode(m));
+  }
+  //Show real ads getter and setter
+
+  static bool get getShowRealAds => _box.get('showRealAds') ?? true;
+  static set setShowRealAds(bool b) {
+    _box.put('showRealAds', b);
+  }
 }

@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:azaadi_vpn_android/controller/ad_controller.dart';
+import 'package:azaadi_vpn_android/controller/premium_controller.dart';
 import 'package:azaadi_vpn_android/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -7,7 +9,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class BuyPremiumDialog extends StatelessWidget {
-  const BuyPremiumDialog({super.key});
+  final bool adOption;
+  final Function? onComplete;
+  BuyPremiumDialog({super.key, required this.adOption, this.onComplete});
 
   @override
   Widget build(BuildContext context) {
@@ -88,7 +92,28 @@ class BuyPremiumDialog extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   )))),
                         ],
-                      )
+                      ),
+                      if (adOption && !PremiumController().isPremium.value)
+                        ElevatedButton.icon(
+                            onPressed: () {
+                              Get.closeAllSnackbars();
+                              Get.snackbar("Please wait", 'Loading ad...',
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.onPrimary);
+                              AdController.showRewardedAd(
+                                  onComplete: onComplete);
+                            },
+                            icon: Icon(
+                              LucideIcons.play,
+                              color: Colors.amber,
+                            ),
+                            label: Text('Watch ad to use',
+                                style: GoogleFonts.lato(
+                                    textStyle: TextStyle(
+                                  color:
+                                      const Color.fromARGB(255, 252, 178, 67),
+                                  fontWeight: FontWeight.bold,
+                                )))),
                     ],
                     mainAxisSize: MainAxisSize.min,
                   ),

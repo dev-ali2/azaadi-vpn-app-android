@@ -8,7 +8,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:azaadi_vpn_android/controller/connection_controller.dart';
 import 'package:azaadi_vpn_android/controller/hive_controller.dart';
 import 'package:azaadi_vpn_android/core/models/vpn.dart';
-import 'package:lucide_icons_flutter/lucide_icons.dart';
 
 class LocationsPage extends StatelessWidget {
   LocationsPage({super.key});

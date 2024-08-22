@@ -64,7 +64,7 @@ class _ThemeInfoContainerState extends State<ThemeInfoContainer> {
                           textStyle: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.bold,
-                              fontSize: 22)),
+                              fontSize: 19)),
                     ),
                   ),
                   Padding(
@@ -125,8 +125,9 @@ class _ThemeInfoContainerState extends State<ThemeInfoContainer> {
                                     } else {
                                       showDialog(
                                         context: context,
-                                        builder: (context) =>
-                                            BuyPremiumDialog(),
+                                        builder: (context) => BuyPremiumDialog(
+                                          adOption: false,
+                                        ),
                                       );
                                     }
                                   }

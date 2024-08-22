@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:ui';
 
 import 'package:azaadi_vpn_android/controller/premium_controller.dart';
@@ -18,7 +17,7 @@ class TitleText extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return GestureDetector(
       onDoubleTap: (() {
-        log('double tapped');
+        // log('double tapped');
         Get.dialog(PremiumPromoDialog());
       }),
       onTap: () {
